@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Maps</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1Ijoia2VoaW5kZW9iYW5sYSIsImEiOiJja2Zta2oyd2sxZ2ZoMzRtanhwc3Z6Y3pwIn0.GMTTI5FBzzx6B5cq-Ne7fA';
+    var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/streets-v11', // style URL
+        center: [2.399601171634771,47.437756233044865], // starting position [lng, lat]
+        zoom: 9 // starting zoom
+    });
+    map.on('click', function (e) {
+                // The event object (e) contains information like the
+                // coordinates of the point on the map that was clicked.
+                console.log('A click event has occurred at ' + e.lngLat);
+                console.log('A click event has occurred at ' + e.lngLat.toArray());
+                $.get("http://localhost:8080/click/?lngLat=" + e.lngLat.toArray())
+                .done(function (data) {
+                    console.log(data)
+                });
+    });
+</script>
+
+</body>
+</html>
