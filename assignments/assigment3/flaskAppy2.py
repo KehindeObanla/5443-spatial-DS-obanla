@@ -73,7 +73,6 @@ def click():
     idForJson+=1
     #returns geojson and a list of numbers 
     #to be used as id in the frontend
-    #print(answer_Collection)
     return jsonify([str(idForJson),answer_Collection])
 if __name__ == '__main__':
     app.run(host='localhost', port=8080)
