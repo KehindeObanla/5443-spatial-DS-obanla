@@ -39,9 +39,10 @@
         console.log('A click event has occurred at ' + e.lngLat);
         console.log('A click event has occurred at ' + e.lngLat.toArray());
         $.getJSON("http://localhost:8080/click/?lngLat="+ e.lngLat.toArray())
+        
             .done(function(json) {
-                console.log("entered");
-               // console.log(json);
+               
+               console.log(json[0]);
                 map.addSource(json[0],{
                     'type':'geojson',
                     'data':json[1]
