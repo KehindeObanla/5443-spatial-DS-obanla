@@ -53,8 +53,8 @@ def click():
     #gets tree id and rtree filled with earthquake data
     earthquakertree,rtreeid = loadAiportintoRtree(earthquakedata) 
     answer_Collection = {
-        'type':'FeatureCollection',
-        'feature':[]
+        'type':"FeatureCollection",
+        'features':[]
     }
      #stores the id of the closest earthquakes
     nearest = list(earthquakertree.nearest((left,bottom,right,top),5))
@@ -63,7 +63,7 @@ def click():
     #rtee and add it to a list
     for item in nearest:
         nearestlist.append({
-            'type':'feature',
+            'type':'Feature',
              'geometry':rtreeid[item]['geometry'],
              'properties':rtreeid[item]['properties']
         })
@@ -73,6 +73,7 @@ def click():
     idForJson+=1
     #returns geojson and a list of numbers 
     #to be used as id in the frontend
+    #print(answer_Collection)
     return jsonify([str(idForJson),answer_Collection])
 if __name__ == '__main__':
     app.run(host='localhost', port=8080)

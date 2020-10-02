@@ -33,24 +33,31 @@
 		center: [-79.4512, 43.6568],
 		zoom: 13
     });
+
+
     map.on('click', function (e) {
      // The event object (e) contains information like the
      // coordinates of the point on the map that was clicked.
         console.log('A click event has occurred at ' + e.lngLat);
         console.log('A click event has occurred at ' + e.lngLat.toArray());
         $.getJSON("http://localhost:8080/click/?lngLat="+ e.lngLat.toArray())
-        
             .done(function(json) {
-               
-               console.log(json[0]);
                 map.addSource(json[0],{
                     'type':'geojson',
                     'data':json[1]
                  });
                  map.addLayer({
                      'id':json[0],
-                      'type':'circle',
-                      'source':json[0]
+                     'source':json[0],
+                     'type': 'circle',
+                     'layout': {
+                    // make layer visible by default
+                    'visibility': 'visible'
+                    },
+                    'paint': {
+                    'circle-radius': 8,
+                    'circle-color': 'rgba(55,148,179,1)'
+                    }
                  });
                })
                .fail(function(jqxhr,textStatus,error){
