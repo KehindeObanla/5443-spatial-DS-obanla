@@ -14,12 +14,12 @@ import math
 
 app = Flask(__name__)
 CORS(app)
-idx = index.Index('eq-rtree')
+idx = index.Index()
 
 @app.route("/token", methods=["GET"])
-    def getToken():
-     """ getToken: this gets mapbox token
-     """
+def getToken():
+    """ getToken: this gets mapbox token
+    """
     token = {'token':'pk.eyJ1Ijoia2VoaW5kZW9iYW5sYSIsImEiOiJja2ZuNm42b3kxamwzMndrdXIyNHkzOG8wIn0.qe4TrmVMMfi1Enpcvk5GfQ'}
 
     return token
@@ -35,7 +35,7 @@ def validateJSON(jsonData):
 def point_to_bbox(lng,lat,offset=.001):
     #(left, bottom, right, top)
 
-    return (lng-offset,lat-offset,lng+offset,lat+offset)
+    return (float(lng-offset),float(lat-offset),float(lng+offset),float(lat+offset))
 
 def move_point(p,distance,feet=False):
     p[1] += float(distance) / 111111.0
@@ -46,6 +46,7 @@ def build_index():
     #(left, bottom, right, top)
     
     eqks = glob.glob("assignments\A04\Assets\json\earthquake_data\earthquakes\*.json")
+    del eqks[200:840]
     count = 0
     bad = 0
     earthquakeUniqueid = {}
@@ -63,8 +64,8 @@ def build_index():
             row = row.strip(",")
             if validateJSON(row):
                 row = json.loads(row)
-                lng,lat,_ = row['geometry']['coordinates']
-              #  earthquakeUniqueid[count] =row
+                lng,lat,_ = row["geometry"]["coordinates"]
+                earthquakeUniqueid[count] =row
                 if lng < minlng:
                     minlng = lng
                 if lat < minlat:
@@ -74,27 +75,30 @@ def build_index():
                 if lat > maxlat:
                     maxlat = lat
 
-                rect = point_to_bbox(lng,lat)
-                idx.insert(count, rect)
+                left, bottom, right, top = point_to_bbox(lng,lat)
+                idx.insert(count, (left, bottom, right, top))
                 count += 1
             else:
                 bad += 1
-    #print(count)
+        """  print(count) """
     return idx,earthquakeUniqueid
 
 
  #returns a list of nearest neigh   
 def nearestNeighbors(lng, lat):
-    idForJson=0 # counter
     answer_Collection = {
-        'type':"FeatureCollection",
-        'features':[]
+        "type":"FeatureCollection",
+       "features":[]
     }
-    earthquakertree,rtreeid = build_index()
-    nearest = list(earthquakertree.nearest((lng,lat,lng,lat),5))
+    
+    idx,rtreeid = build_index()
+    left, bottom, right, top = point_to_bbox(lng,lat)
+    nearest = list(idx.nearest(( left, bottom, right, top ),2))
+    """     print (nearest) """
     nearestlist = []
     # for each id get all other properties from
     #rtee and add it to a list
+
     for item in nearest:
         nearestlist.append({
             'type':'Feature',
@@ -103,15 +107,22 @@ def nearestNeighbors(lng, lat):
         })
    # add nearestlist to a dictionary
    #to make it a geojson file
-    answer_Collection['feature'] = nearestlist
-    idForJson+=1
-    #returns geojson and a list of numbers 
+    answer_Collection['features'] =nearestlist
+    # convert into JSON:
+    convertedGeojson = json.dumps(answer_Collection)
+    # the result is a JSON string: 
     #to be used as id in the frontend
-    return jsonify([str(idForJson),answer_Collection])
-
+    return convertedGeojson
+@app.route('/click/')
+def click():
+    lng, lat = request.args.get("lngLat",None).split(",")
+    return nearestNeighbors(float(lng), float(lat))
 
 
 if __name__=='__main__':
-     app.run(host='localhost', port=8080)
+    app.run(host='localhost', port=8080)
   
+    
+        
+   
     
