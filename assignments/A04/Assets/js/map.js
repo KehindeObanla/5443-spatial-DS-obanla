@@ -217,8 +217,24 @@ map.on('load', function () {
 // Coordinates Tool
 // Coordinates Tool
 map.on(touchEvent, function (e) {
+    var json ={
+        "type":"Feature",
+        "geometry":{
+            "type":"Point",
+            "coordinate":[e.lngLat.toArray()]
+        },
+        "properties":{
+            
+        }
+       
+    };
+    console.log(json)
     document.getElementById('info').innerHTML =
         JSON.stringify(e.lngLat, function (key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
+// create json to store
+// create json to store
+// create json to store
+
 });
 
 //Layer Tree
