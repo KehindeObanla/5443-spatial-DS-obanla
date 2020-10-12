@@ -51,10 +51,6 @@
             $.getJSON("http://localhost:8080/click/?lngLat="+ e.lngLat.toArray())
             .done(function(json) {
                 console.log(json.features)
-                // var count = json.features.length
-                // var counts = count*2
-                // console.log(count)
-                // $.each(json.features, function (key, val) {
                 map.addSource('point',{
                     'type':'geojson',
                     'data':json
@@ -69,7 +65,7 @@
                     }
                  });
                })
-            //    count -=1;
+          
             });
            
         };

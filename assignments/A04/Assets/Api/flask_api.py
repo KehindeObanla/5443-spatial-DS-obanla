@@ -46,7 +46,7 @@ def build_index():
     #(left, bottom, right, top)
     
     eqks = glob.glob("assignments\A04\Assets\json\earthquake_data\earthquakes\*.json")
-    del eqks[200:840]
+    del eqks[300:840]
     count = 0
     bad = 0
     earthquakeUniqueid = {}
@@ -94,7 +94,7 @@ def nearestNeighbors(lng, lat):
     idx,rtreeid = build_index()
     left, bottom, right, top = point_to_bbox(lng,lat)
     nearest = list(idx.nearest(( left, bottom, right, top ),2))
-    """     print (nearest) """
+    print (nearest)
     nearestlist = []
     # for each id get all other properties from
     #rtee and add it to a list

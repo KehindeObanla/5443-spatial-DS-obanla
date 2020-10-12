@@ -1,5 +1,4 @@
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2VoaW5kZW9iYW5sYSIsImEiOiJja2ZuNm42b3kxamwzMndrdXIyNHkzOG8wIn0.qe4TrmVMMfi1Enpcvk5GfQ';
-
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v9',
@@ -159,7 +158,61 @@ map.on('load', function () {
         });
     });
 });
+//enter Lat Long
+//enter Lat Long
+//enter Lat Long
+map.on('load', function () {
 
+    $(document).ready(function () {
+
+
+        //clear
+        $('#findClearNearest').click(function () {
+
+            map.removeLayer("points");
+            map.removeSource("point");
+
+            if (map.getLayer("points")) {
+                map.removeLayer("points");
+                map.removeSource("point");
+            }
+            $("#lngInputs").val('')
+            $("#latInputs").val('')
+        });
+
+        //create
+        $('#findNearest').click(function () {
+
+            var enterLng = $("#lngInputs").val()
+            var enterLat = $("#latInputs").val()
+            
+            var enterLL = turf.point([enterLng, enterLat]);
+            
+             $.getJSON("http://localhost:8080/click/?lngLat="+ enterLng +","+ enterLat)
+            .done(function(json) {
+                console.log(json.features)
+                map.addSource('point',{
+                    'type':'geojson',
+                    'data':json
+                 });
+                 map.addLayer({
+                     'id':'points',
+                     'source':'point',
+                     'type': 'circle',
+                    'paint': {
+                    'circle-radius': 6,
+                    'circle-color':'#B42222'
+                    }
+                 });
+            })
+
+            map.flyTo({
+                center: [enterLng, enterLat]
+            });
+
+        });
+    });
+});
 // Coordinates Tool
 // Coordinates Tool
 // Coordinates Tool
@@ -1185,28 +1238,7 @@ function addEditLabels(e) {
 //fire function to populate text/color custom pallete
 populatePalette();
 
-map.on('click', addEditLabels, function(e){
-    // The event object (e) contains information like the
-     // coordinates of the point on the map that was clicked.
-     console.log('A click event has occurred at ' + e.lngLat);
-     console.log('A click event has occurred at ' + e.lngLat.toArray());
-     $.getJSON("http://localhost:8080/click/?lngLat="+ e.lngLat.toArray())
-         .done(function(json) {
-             map.addSource('country',{
-                 'type':'geojson',
-                 'data':json
-              });
-              map.addLayer({
-                  'id':"test",
-                  'source':json,
-                  'type': 'circle',
-                 'paint': {
-                 'circle-radius': 8,
-                 'circle-color':'#B42222'
-                 }
-              });
-            })
-});
+map.on('click', addEditLabels);
 
 
 // custom draw styles paramaters
@@ -2046,6 +2078,7 @@ map.on('mousemove', function (e) {
 
     }
 });
+//
 
 // remove measurements from input
 map.on('click', function (e) {
