@@ -236,7 +236,13 @@ $("#clearCity").click(function(event) {
     }
 });
 
+$("#searchACity").click(function(event) {
+    populateCitySelectA()
+});
 
+$("#searchBCity").click(function(event) {
+    populateCitySelectB()
+});
 $("#CitySelectA").click(function(event) {
     let city = $("#CitySelectA option:selected").text();
     $("#PickCityA").val(city);
@@ -248,10 +254,22 @@ $("#CitySelectB").click(function(event) {
     $('#CitySelectB').hide();
 });
 
+function RadioValue() {
+    var ele = document.getElementsByName('units');
+
+    for (i = 0; i < ele.length; i++) {
+        if (ele[i].checked)
+
+            return (ele[i].value);
+
+
+    }
+}
 $("#searchCity").click(function(event) {
+    var ele = RadioValue();
     let CityA = $("#CitySelectA").val();
     let CityB = $("#CitySelectB").val();
-    var res = CityA.concat(",", CityB);
+    var res = CityA.concat(",", CityB, ";", ele);
     var splited = CityA.split(",");
     var splited2 = CityB.split(",");
     var lng = parseFloat(splited[0]);
@@ -264,7 +282,7 @@ $("#searchCity").click(function(event) {
             console.log(data)
             addLayer(lng, lat, lng1, lat1)
             lineAnswers = document.getElementById('calculated-length2');
-            lineAnswers.innerHTML = '<p>' + data + ' miles</p>';
+            lineAnswers.innerHTML = '<p>' + data + '</p>';
         });
 
 });
@@ -296,7 +314,7 @@ function addLayer(lng, lat, lng1, lat1) {
         },
         'paint': {
             'line-color': '#FF0000',
-            'line-width': 8
+            'line-width': 2
         }
     });
 }

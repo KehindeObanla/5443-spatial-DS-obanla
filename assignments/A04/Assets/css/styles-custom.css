@@ -168,6 +168,22 @@ button:focus {
     cursor: pointer;
 }
 
+#searchACity {
+    min-height: 34px;
+    width: 50px;
+    background-color: #c5c5c5;
+    border: none;
+    cursor: pointer;
+}
+
+#searchBCity {
+    min-height: 25px;
+    width: 50px;
+    background-color: #c5c5c5;
+    border: none;
+    cursor: pointer;
+}
+
 #searchCity {
     min-height: 40px;
     width: 50px;

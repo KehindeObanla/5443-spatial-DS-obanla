@@ -309,11 +309,20 @@ def finddistance():
         Example: http://localhost:8080/distance/?lnglat=
     """
     lng,lat,lng1,lat1= request.args.get('lnglat',None).split(",")
-    lnglat = (float(lng),float(lat))
-    lnglat1 =(float(lng1),float(lat1))
-    answer = haversine(lnglat, lnglat1, miles=True)
-    return str( answer )
-    
+    checkformiORkm=request.args.get('lnglat',None).split(";")
+    lng,lat,lng1,lat1=checkformiORkm[0].split(",")
+    mile = checkformiORkm[1]
+    if(mile =='mile'):
+        lnglat = (float(lng),float(lat))
+        lnglat1 =(float(lng1),float(lat1))
+        answer = haversine(lnglat, lnglat1, miles=True)
+        return str( answer )
+  
+    else:
+        lnglat = (float(lng),float(lat))
+        lnglat1 =(float(lng1),float(lat1))
+        answer = haversine(lnglat, lnglat1, miles=False)
+        return str( answer )
 
 @app.route('/states', methods=["GET"])
 def states():

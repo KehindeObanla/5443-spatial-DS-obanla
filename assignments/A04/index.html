@@ -418,29 +418,33 @@
                         <p style="font-size: 12px"><i class="fas fa-ruler"></i> select two cities to calculate distance.</p>
                         <div style="display: inline-flex;" id="">
                             <input type="search" id=PickCityA placeholder="City A" style="margin-bottom: 5%;" />
+                            <button class="clickable" type="submit" id="searchACity" style="margin-bottom: 5%;"><i
+                                class="fa fa-search"></i></button>
                         </div>
                         <select class="City-pickerA" id="CitySelectA"></select>
                         <br />
                         <div style="display: inline-flex;" id="">
                             <input type="search" id=PickCityB placeholder="City B" style="margin-top: 5%;" />
+                            <button class="clickable" type="submit" id="searchBCity" style="margin-top: 5%;"><i
+                                class="fa fa-search"></i></button>
                         </div>
                         <br/>
                         <select class="City-pickerB" id="CitySelectB"></select>
 
                         <div>
                             <button class="clickable" type="submit" id="searchCity" style="width:40%; margin-top:5%;"><i
-                                class="fa fa-search"></i></button>
+                                class="fa fa-search"></i> find</button>
                             <button class="clickable" type="submit" id="clearCity" style="width:40%"><i
-                                class="fa fa-eraser"></i></button>
+                                class="fa fa-eraser"></i>ClearAll</button>
                         </div>
                         <p style="font-size: 12px; margin-top: 5%;">Distance between City A and B:</p>
                         <div id='calculated-length2'></div>
 
                         <div style="display: inline-flex">
-                            <i style="font-size:smaller; margin: 5px 4px 0px 4px;"><input type="radio" name="unit"
-                                id="mile" value="mile" /> mi &nbsp;</i>
-                            <i style="font-size:smaller; margin: 5px 4px 0px 4px;"><input type="radio" name="unit"
-                                id="kilometer" value="kilometer" /> km &nbsp;</i>
+                            <i style="font-size:smaller; margin: 5px 4px 0px 4px;"><input type="radio" name="units"
+                                id="miles" value="mile" checked="checked" /> mi &nbsp;</i>
+                            <i style="font-size:smaller; margin: 5px 4px 0px 4px;"><input type="radio" name="units"
+                                id="kilometers" value="kilometer" /> km &nbsp;</i>
 
                         </div>
 
