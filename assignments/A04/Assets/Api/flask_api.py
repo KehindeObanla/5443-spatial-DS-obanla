@@ -95,7 +95,7 @@ def load_data(path):
     if os.path.isfile(path):            # is it a real file?
         with open(path) as f:
             
-            if ftype == ".json":        # handle json
+            if ftype == ".json" or ftype == ".geojson":# handle json
                 data = f.read()
                 if isJson(data):
                     return json.loads(data)
@@ -126,8 +126,8 @@ def move_point(p,distance,feet=False):
 def build_index():
     #(left, bottom, right, top)
     
-    eqks = glob.glob("assignments\A04\Assets\json\earthquake_data\earthquakes\*.json")
-    del eqks[300:840]
+    eqks = glob.glob("assignments\\A04\\Assets\\json\\earthquake_data\\earthquakes\\*.json")
+    del eqks[350:840]
     count = 0
     bad = 0
     earthquakeUniqueid = {}
@@ -174,7 +174,7 @@ def nearestNeighbors(lng, lat):
     
     idx,rtreeid = build_index()
     left, bottom, right, top = point_to_bbox(lng,lat)
-    nearest = list(idx.nearest(( left, bottom, right, top ),2))
+    nearest = list(idx.nearest(( left, bottom, right, top ),5))
     print (nearest)
     nearestlist = []
     # for each id get all other properties from
@@ -207,6 +207,7 @@ Helper classes to act as our data backend.
 
 STATES = load_data("assignments\\A04\\assets\\json\\countries_states\\states.json")
 STATE_BBOXS = load_data("assignments\\A04\\assets\\json\\countries_states\\us_states_bbox.csv")
+CITIES = load_data("assignments\\A04\\assets\\json\\countries_states\\major_cities.geojson")
 idx = index.Index()
 """
    ____   ___  _   _ _____ _____ ____  
@@ -223,6 +224,24 @@ def getToken():
 
     return token
 
+@app.route("/", methods=["GET"])
+def getRoutes():
+    """ getRoutes: this gets all the routes to display as help for developer.
+    """
+    routes = {}
+    for r in app.url_map._rules:
+        
+        routes[r.rule] = {}
+        routes[r.rule]["functionName"] = r.endpoint
+        routes[r.rule]["help"] = formatHelp(r.endpoint)
+        routes[r.rule]["methods"] = list(r.methods)
+
+    routes.pop("/static/<path:filename>")
+    routes.pop("/")
+
+    response = json.dumps(routes,indent=4,sort_keys=True)
+    response = response.replace("\n","<br>")
+    return "<pre>"+response+"</pre>"
 
 @app.route('/geo/direction/')
 def get_direction():
@@ -246,8 +265,56 @@ def get_direction():
 
 @app.route('/click/')
 def click():
+    """ Description: return a list of US nearest negihbours
+        Params: 
+            None
+        Example:http://localhost:8080/click/?lngLat="
+    """
     lng, lat = request.args.get("lngLat",None).split(",")
     return nearestNeighbors(float(lng), float(lat))
+
+@app.route('/cities', methods=["GET"])
+def cities():
+    """ Description: return a list of US ciyies names and long lat
+        Params: 
+            None
+        Example: http://localhost:8080/cities?filter=mis
+    """
+    filter = request.args.get('filter',None)
+    results = []
+    if (filter):
+        
+        for city in CITIES["features"]:
+            if filter.lower() == city["properties"]["name"][:len(filter)].lower():
+                answers = {
+                    "Name": city["properties"]["name"],
+                    "Coordinates": city["geometry"]["coordinates"]
+                    }
+                results.append(answers)
+    else:
+        for city in CITIES["features"]:
+            answers = {
+                    "Name": city["properties"]["name"],
+                    "Coordinates": city["geometry"]["coordinates"]
+                    }
+            results.append(answers)
+
+    return handle_response(results)
+""" using halversine function to find distance """
+@app.route('/distance/', methods=["GET"])
+def finddistance():
+    """ Description: return a distance between two points
+        Params: 
+            None
+        Example: http://localhost:8080/distance/?lnglat=
+    """
+    lng,lat,lng1,lat1= request.args.get('lnglat',None).split(",")
+    lnglat = (float(lng),float(lat))
+    lnglat1 =(float(lng1),float(lat1))
+    answer = haversine(lnglat, lnglat1, miles=True)
+    return str( answer )
+    
+
 @app.route('/states', methods=["GET"])
 def states():
     """ Description: return a list of US state names
@@ -296,7 +363,7 @@ def state_bbox():
 
 
 if __name__=='__main__':
-    app.run(host='localhost', port=8080)
+    app.run(host='localhost', port=8080,debug=True)
   
     
         

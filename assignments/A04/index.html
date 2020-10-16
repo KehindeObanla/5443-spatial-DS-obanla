@@ -28,8 +28,7 @@
     <script src="assets/js/jquery.js"></script>
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css"
-        integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 
     <!-- Mapbox GL -->
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js'></script>
@@ -45,14 +44,11 @@
 
     <!-- Mapbox GL Draw API -->
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.js'></script>
-    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css'
-        type='text/css' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css' type='text/css' />
 
     <!-- Mapbox GL Geocoder API -->
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
-    <link rel='stylesheet'
-        href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css'
-        type='text/css' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
 
     <!-- Layer Search -->
     <link href="assets/plugins/jsonSearch/chosen/chosen.css" rel="stylesheet">
@@ -72,10 +68,9 @@
             top: 50px;
             bottom: 0;
             width: 100%;
-            
         }
-
         /*mapbox gl css override*/
+        
         .mapboxgl-ctrl-group {
             border-radius: 0px;
             -moz-box-shadow: none;
@@ -84,27 +79,27 @@
             overflow: hidden;
             background: #fff;
         }
-
+        
         .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl {
             margin: 0 0 10px 65px;
             float: left;
         }
-
+        
         .mapboxgl-ctrl-group:not(:empty) {
             -moz-box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
             -webkit-box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
             box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.1);
         }
-
+        
         .mapboxgl-ctrl-group>button+button {
             border-top: 0;
         }
-
+        
         .custom-combobox {
             position: relative;
             display: inline-block;
         }
-
+        
         .custom-combobox-toggle {
             position: absolute;
             top: 0;
@@ -112,7 +107,7 @@
             margin-left: -1px;
             padding: 0;
         }
-
+        
         .custom-combobox-input {
             margin: 0;
             padding-top: 2px;
@@ -127,22 +122,23 @@
 
     <script>
         // initial load screen script
-        $(window).load(function () {
+        $(window).load(function() {
             $(".se-pre-con").delay(2000).fadeOut(700);
         });
     </script>
 
     <script>
-        document.addEventListener('touchmove', function (e) {
+        document.addEventListener('touchmove', function(e) {
             e.preventDefault();
-        }, { passive: false });
+        }, {
+            passive: false
+        });
     </script>
 
     <!--initial load screen -->
     <div class="se-pre-con">
         <h2 style="text-align: center; margin-top:20%; color: white">
-            <i class="fa fa-cog fa-spin"></i>&nbsp;+&nbsp;<i class="fa fa-globe"></i>&nbsp;=&nbsp;<i
-                class="fas fa-grin-hearts"></i>
+            <i class="fa fa-cog fa-spin"></i>&nbsp;+&nbsp;<i class="fa fa-globe"></i>&nbsp;=&nbsp;<i class="fas fa-grin-hearts"></i>
         </h2>
     </div>
 
@@ -219,8 +215,7 @@
 
                     <li>
                         <!-- Layer Attributes -->
-                        <a class="clickable" data-toggle="modal" data-target="#attributesModal"
-                            title="Layer's Attributes"><i class="fa fa-fw fa-info"></i></a>
+                        <a class="clickable" data-toggle="modal" data-target="#attributesModal" title="Layer's Attributes"><i class="fa fa-fw fa-info"></i></a>
                     </li>
 
                     <li>
@@ -237,37 +232,32 @@
 
                     <li>
                         <!-- Coordinates/Address Button -->
-                        <a class="clickable" data-toggle="modal" data-target="#geolocationModal"
-                            title="Search Address & Coords."><i class="fas fa-fw fa-map-marker-alt"></i></a>
+                        <a class="clickable" data-toggle="modal" data-target="#geolocationModal" title="Search Address & Coords."><i class="fas fa-fw fa-map-marker-alt"></i></a>
                     </li>
 
 
                     <li>
                         <!-- nearest neighbour button -->
-                        <a class="clickable" data-toggle="modal" data-target="#nearestlocationModal"
-                            title="search nearest neighibours"><i class="fas fa-globe"></i></a>
+                        <a class="clickable" data-toggle="modal" data-target="#nearestlocationModal" title="search nearest neighibours"><i class="fas fa-globe"></i></a>
                     </li>
-                    <li> 
+                    <li>
                         <!-- Plane Crash Button -->
-                        <a class="clickable" data-toggle="modal" data-target="#testModal"
-                            title="Airplane Crashes">
+                        <a class="clickable" data-toggle="modal" data-target="#testModal" title="Airplane Crashes">
                             <span class="fa-stack">
                                 <i class="fab fa-gripfire fa-2x"  style="color:Tomato"></i>
                                 <i class="fas fa-plane fa-stack-1x fa-rotate-90" style="color:white; left:-5px;top:4px"></i>
                               </span>
-                            </a>
+                        </a>
                     </li>
 
                     <li>
                         <!-- Search Button -->
-                        <a class="clickable" data-toggle="modal" data-target="#searchModal"
-                            title="Search Layer Attributes"><i class="fa fa-fw fa-search"></i></a>
+                        <a class="clickable" data-toggle="modal" data-target="#searchModal" title="Search Layer Attributes"><i class="fa fa-fw fa-search"></i></a>
                     </li>
 
                     <li>
                         <!-- Print Map Button -->
-                        <a class="stop-print-click" id='mapboxgl-ctrl-print' data-toggle='modal'
-                            data-target='#map-print-modal' title="Print Map"><i class="fa fa-fw fa-print"></i></a>
+                        <a class="stop-print-click" id='mapboxgl-ctrl-print' data-toggle='modal' data-target='#map-print-modal' title="Print Map"><i class="fa fa-fw fa-print"></i></a>
                     </li>
 
                 </ul>
@@ -318,9 +308,8 @@
                     <div class="modal-body">
 
                         <div>
-                            <div style="font-size:xx-small; margin:0"><i style="color:#dc4f4f"
-                                    class="fa fa-fw fa-exclamation-circle"></i> Select a layer on the map to display
-                                attributes...</div>
+                            <div style="font-size:xx-small; margin:0"><i style="color:#dc4f4f" class="fa fa-fw fa-exclamation-circle"></i> Select a layer on the map to display attributes...
+                            </div>
                             <div style="font-size: 12px" id="layer-attribute"></div>
                         </div>
 
@@ -349,8 +338,7 @@
                         <hr>
                         <br />
 
-                        <p style="font-size: 12px"><i class="fas fa-draw-polygon"></i> Use the Draw tools to create
-                            mark-ups on the map.</p>
+                        <p style="font-size: 12px"><i class="fas fa-draw-polygon"></i> Use the Draw tools to create mark-ups on the map.</p>
                         <div id="drawAppend"></div>
 
                         <div style="display: flex; flex-direction: row">
@@ -361,8 +349,7 @@
                         <hr>
                         <br />
 
-                        <p style="font-size: 12px"><i class="fas fa-ruler"></i> Use the Draw tools above to calculate
-                            area and distance.</p>
+                        <p style="font-size: 12px"><i class="fas fa-ruler"></i> Use the Draw tools above to calculate area and distance.</p>
 
                         <p style="font-size: 12px; margin: 0;">area:</p>
                         <div id='calculated-area'> </div>
@@ -402,8 +389,7 @@
 
                         <div style="display: inline-flex; width: 100%; padding-top: 8px">
                             <div id='customTextColor' style="padding-top: 7px;"></div>
-                            <div id='customTextSize'
-                                style="padding-left: 10px; font-family: 'Times New Roman', Times, serif;"></div>
+                            <div id='customTextSize' style="padding-left: 10px; font-family: 'Times New Roman', Times, serif;"></div>
                         </div>
 
                         <br />
@@ -415,47 +401,59 @@
         </div>
         <!-- draw on map distance modal-->
         <!-- draw on map distance modal-->
-       <!-- draw on map distance modal-->
-       <div class="modal left fade" id="distanceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+        <!-- draw on map distance modal-->
+        <div class="modal left fade" id="distanceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-fw fa-pencil-alt"></i>&nbsp;Draw Tools
-                    </h4>
-                </div>
-
-                <div class="modal-body">
-
-                    <p style="font-size: 12px"><i class="fas fa-ruler"></i> select  two states to calculate distance.</p>
-
-                    <p style="font-size: 12px; margin: 0;">area:</p>
-                    <div id='calculated-area'> </div>
-
-                    <p style="font-size: 12px; margin: 0;">length/perimeter:</p>
-                    <div id='calculated-length'></div>
-
-                    <div style="display: inline-flex">
-                        <i style="font-size:smaller; margin: 5px 4px 0px 4px;"><input type="radio" name="unit"
-                                id="mile" value="mile" /> mi &nbsp;</i>
-                        <i style="font-size:smaller; margin: 5px 4px 0px 4px;"><input type="radio" name="unit"
-                                id="kilometer" value="kilometer" /> km &nbsp;</i>
-                       
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-fw fa-pencil-alt"></i>&nbsp;Diatance between two cities
+                        </h4>
                     </div>
 
+                    <div class="modal-body">
 
-                    <br />
-                    <hr style="margin-top: 15px">
-                    <br />
+                        <p style="font-size: 12px"><i class="fas fa-ruler"></i> select two cities to calculate distance.</p>
+                        <div style="display: inline-flex;" id="">
+                            <input type="search" id=PickCityA placeholder="City A" style="margin-bottom: 5%;" />
+                        </div>
+                        <select class="City-pickerA" id="CitySelectA"></select>
+                        <br />
+                        <div style="display: inline-flex;" id="">
+                            <input type="search" id=PickCityB placeholder="City B" style="margin-top: 5%;" />
+                        </div>
+                        <br/>
+                        <select class="City-pickerB" id="CitySelectB"></select>
 
-                  
+                        <div>
+                            <button class="clickable" type="submit" id="searchCity" style="width:40%; margin-top:5%;"><i
+                                class="fa fa-search"></i></button>
+                            <button class="clickable" type="submit" id="clearCity" style="width:40%"><i
+                                class="fa fa-eraser"></i></button>
+                        </div>
+                        <p style="font-size: 12px; margin-top: 5%;">Distance between City A and B:</p>
+                        <div id='calculated-length2'></div>
 
+                        <div style="display: inline-flex">
+                            <i style="font-size:smaller; margin: 5px 4px 0px 4px;"><input type="radio" name="unit"
+                                id="mile" value="mile" /> mi &nbsp;</i>
+                            <i style="font-size:smaller; margin: 5px 4px 0px 4px;"><input type="radio" name="unit"
+                                id="kilometer" value="kilometer" /> km &nbsp;</i>
+
+                        </div>
+
+                        <br />
+                        <hr style="margin-top: 15px">
+                        <br />
+
+
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
         <!-- Search Modal -->
         <!-- Search Modal -->
@@ -472,14 +470,12 @@
                     </div>
 
                     <div class="modal-body">
-                        <p style="margin-bottom: -1px; padding: 0px 0px 5px 0px; width: 100%;"><br />Step 1. Pick
-                            searchable layer...</p>
+                        <p style="margin-bottom: -1px; padding: 0px 0px 5px 0px; width: 100%;"><br />Step 1. Pick searchable layer...</p>
                         <select class="layer-picker" id="json_layer" data-placeholder="Layer Picker"></select>
                         <br />
-                        <p style="margin-bottom: -1px; padding: 0px 0px 5px 0px; width: 100%;"><br />Step 2. Start
-                            searching...</p>
-                        <p style="margin-bottom: -1px; padding: 5px 5px 5px 5px; width: 100%; background-color: #fafafa; color: #528ea7; font-size: smaller; "
-                            id="property-descr"><br /></p>
+                        <p style="margin-bottom: -1px; padding: 0px 0px 5px 0px; width: 100%;"><br />Step 2. Start searching...
+                        </p>
+                        <p style="margin-bottom: -1px; padding: 5px 5px 5px 5px; width: 100%; background-color: #fafafa; color: #528ea7; font-size: smaller; " id="property-descr"><br /></p>
 
                         <div style="display: inline-flex;" id="target_layer">
                             <input type="search" id="general_search" placeholder="Properties" />
@@ -492,7 +488,7 @@
 
                         <script>
                             //Allows user to hit enter to search for json property
-                            $("#general_search").keyup(function (event) {
+                            $("#general_search").keyup(function(event) {
                                 if (event.keyCode == 13) {
                                     $("#search_general").click();
                                 }
@@ -524,8 +520,7 @@
                             <div class="col-md-6 mb-3">
                                 <div class="ui-widget">
                                     <label>Choose State:</label>
-                                    <input type="string" id='stateInput'
-                                        style="font-size: 12px; padding: 2px; margin:2px; width:200px" placeholder="State"><br>
+                                    <input type="string" id='stateInput' style="font-size: 12px; padding: 2px; margin:2px; width:200px" placeholder="State"><br>
                                     <select id="statesComboBox" style="font-size: 12px; padding: 2px; margin:2px;  width:200px">
                                         <option></option>
                                     </select>
@@ -541,14 +536,15 @@
             </div>
             <script>
                 //Allows user to hit enter to search for json property
-                $("#stateInput").keyup(function( event ) {
+                $("#stateInput").keyup(function(event) {
                     // $("#statesComboBox").click();
                     populateStatesCombo();
                 });
-                function populateStatesCombo(){
+
+                function populateStatesCombo() {
                     let filter = $("#stateInput").val()
 
-                    $.get("http://localhost:8080/states?filter="+filter, function (data) {
+                    $.get("http://localhost:8080/states?filter=" + filter, function(data) {
                         //console.log(data);
                         html = '';
                         let count = data['count'];
@@ -559,16 +555,15 @@
                             let name = data['results'][i].name;
                             html += '<option value="' + abbr + '">' + name + '</option>';
                         }
-                        $("#statesComboBox").attr("size",count);
+                        $("#statesComboBox").attr("size", count);
                         $('#statesComboBox').html(html);
                         //console.log(html);
 
                     });
                 }
-                $("#statesComboBox").click(function () {
+                $("#statesComboBox").click(function() {
 
                 });
-
             </script>
         </div>
         <!-- Location Modal -->
@@ -581,8 +576,7 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel"><i
-                                class="fas fa-fw fa-map-marker-alt"></i>&nbsp;Location Tools</h4>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fas fa-fw fa-map-marker-alt"></i>&nbsp;Location Tools</h4>
                     </div>
 
                     <div class="modal-body">
@@ -593,10 +587,8 @@
                         <!-- enter lng/lat -->
                         <div style="vertical-align:top;">
                             <p style="font-size: 12px"><i class="fas fa-map-marked-alt"></i> Enter Coordinates</p>
-                            <input type="number" id='lngInput' style="font-size: 11px; padding: 2px; margin:2px"
-                                placeholder="longitude"><br>
-                            <input type="number" id='latInput' style="font-size: 11px; padding: 2px; margin:2px"
-                                placeholder="latitude"><br>
+                            <input type="number" id='lngInput' style="font-size: 11px; padding: 2px; margin:2px" placeholder="longitude"><br>
+                            <input type="number" id='latInput' style="font-size: 11px; padding: 2px; margin:2px" placeholder="latitude"><br>
 
                             <div style="padding-top:10px">
                                 <input type="button" value="find" id="findLLButton" style="font-size: 10px;">
@@ -628,46 +620,43 @@
                 </div>
             </div>
         </div>
-       <!--  nearest neighibours -->
-       <!--  nearest neighibours -->
-       <!--  nearest neighibours -->
-       <div class="modal left fade" id="nearestlocationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+        <!--  nearest neighibours -->
+        <!--  nearest neighibours -->
+        <!--  nearest neighibours -->
+        <div class="modal left fade" id="nearestlocationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel"><i
-                            class="fas fa-fw fa-map-marker-alt"></i>&nbsp;Location Tools</h4>
-                </div>
-
-                <div class="modal-body">
-                    <br />
-                    <hr>
-                    <br />
-                     <!-- enter lng/lat -->
-                     <div style="vertical-align:top;">
-                        <p style="font-size: 12px"><i class="fas fa-map-marked-alt"></i> Enter Coordinates to find nearest</p>
-                        <input type="number" id='lngInputs' style="font-size: 11px; padding: 2px; margin:2px"
-                            placeholder="longitude"><br>
-                        <input type="number" id='latInputs' style="font-size: 11px; padding: 2px; margin:2px"
-                            placeholder="latitude"><br>
-
-                        <div style="padding-top:10px">
-                            <input type="button" value="find" id="findNearest" style="font-size: 10px;">
-                            <input type="button" value="clear" id="findClearNearest" style="font-size: 10px;">
-                        </div>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fas fa-fw fa-map-marker-alt"></i>&nbsp;Location Tools</h4>
                     </div>
 
-                    <br />
-                    <hr>
-                    <br />
+                    <div class="modal-body">
+                        <br />
+                        <hr>
+                        <br />
+                        <!-- enter lng/lat -->
+                        <div style="vertical-align:top;">
+                            <p style="font-size: 12px"><i class="fas fa-map-marked-alt"></i> Enter Coordinates to find nearest</p>
+                            <input type="number" id='lngInputs' style="font-size: 11px; padding: 2px; margin:2px" placeholder="longitude"><br>
+                            <input type="number" id='latInputs' style="font-size: 11px; padding: 2px; margin:2px" placeholder="latitude"><br>
 
+                            <div style="padding-top:10px">
+                                <input type="button" value="find" id="findNearest" style="font-size: 10px;">
+                                <input type="button" value="clear" id="findClearNearest" style="font-size: 10px;">
+                            </div>
+                        </div>
+
+                        <br />
+                        <hr>
+                        <br />
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
         <!-- Print Modal -->
         <!-- Print Modal -->
         <!-- Print Modal -->
@@ -690,9 +679,7 @@
                                 <div class="col">
                                     <div class="form-group col-sm-12">
                                         <label>Map Title:</label>
-                                        <input id="export-title" name="export-title" type="text"
-                                            style="font-size: smaller" placeholder="Title..."
-                                            class="form-control input-md" maxlength="90">
+                                        <input id="export-title" name="export-title" type="text" style="font-size: smaller" placeholder="Title..." class="form-control input-md" maxlength="90">
                                     </div>
                                 </div>
 
@@ -733,9 +720,7 @@
                                 <div>
                                     <button type="button" id="export-map" class="button button" data-dismiss="modal"><i
                                             class="fa fa-fw fa-print"></i> Create Map</button>
-                                    <div style="padding-top: 13px; font-size:xx-small; margin:0"><i
-                                            style="color:#dc4f4f" class="fa fa-fw fa-exclamation-circle"></i> This may
-                                        take a few seconds...</div>
+                                    <div style="padding-top: 13px; font-size:xx-small; margin:0"><i style="color:#dc4f4f" class="fa fa-fw fa-exclamation-circle"></i> This may take a few seconds...</div>
                                 </div>
                             </div>
                         </form>
@@ -817,7 +802,7 @@
     <script src="assets/plugins/jsonSearch/chosen/chosen.jquery.js"></script>
 
     <script type="text/javascript">
-        $("#json_layer").change(function () {
+        $("#json_layer").change(function() {
             $("#general_search").val("");
             $("#property-descr").html("<br />");
             var source_name = $('#json_layer').val();

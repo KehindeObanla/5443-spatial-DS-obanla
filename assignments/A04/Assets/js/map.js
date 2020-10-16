@@ -25,7 +25,7 @@ map.addControl(new mapboxgl.ScaleControl({
 map.addControl(new mapboxgl.GeolocateControl());
 
 //This overides the Bootstrap modal "enforceFocus" to allow user interaction with main map
-$.fn.modal.Constructor.prototype.enforceFocus = function () { };
+$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
 // print function
 var printBtn = document.getElementById('mapboxgl-ctrl-print');
@@ -36,18 +36,18 @@ var printOptions = {
     northArrow: 'assets/plugins/print-export/north_arrow.svg'
 }
 
-printBtn.onclick = function (e) {
+printBtn.onclick = function(e) {
     PrintControl.prototype.initialize(map, printOptions)
 }
 
-exportView.onclick = function (e) {
+exportView.onclick = function(e) {
     PrintControl.prototype.exportMap();
     e.preventDefault();
 }
 
 
 // Layer Search Event Handlers
-$('#search_general').on('click', function (e) {
+$('#search_general').on('click', function(e) {
 
     var criteria = $('#general_search').val();
     var prop = $('#property-descr').text();
@@ -57,7 +57,7 @@ $('#search_general').on('click', function (e) {
 
 });
 
-$('#clear_general').on('click', function (e) {
+$('#clear_general').on('click', function(e) {
 
     $("#general_search").val("");
     $("#property-descr").html("<br />");
@@ -75,7 +75,7 @@ var geocoder = new MapboxGeocoder({
 var addressTool = document.getElementById('addressAppend');
 addressTool.appendChild(geocoder.onAdd(map))
 
-map.on('load', function () {
+map.on('load', function() {
     map.addSource('geocode-point', {
         "type": "geojson",
         "data": {
@@ -97,7 +97,7 @@ map.on('load', function () {
         }
     });
 
-    geocoder.on('result', function (ev) {
+    geocoder.on('result', function(ev) {
         map.getSource('geocode-point').setData(ev.result.geometry);
     });
 
@@ -107,13 +107,13 @@ map.on('load', function () {
 //Enter Lat Long
 //Enter Lat Long
 
-map.on('load', function () {
+map.on('load', function() {
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
 
         //clear
-        $('#findLLButtonClear').click(function () {
+        $('#findLLButtonClear').click(function() {
 
             map.removeLayer("enterLL");
             map.removeSource("enterLL");
@@ -126,7 +126,7 @@ map.on('load', function () {
         });
 
         //create
-        $('#findLLButton').click(function () {
+        $('#findLLButton').click(function() {
 
             var enterLng = +document.getElementById('lngInput').value
             var enterLat = +document.getElementById('latInput').value
@@ -158,16 +158,16 @@ map.on('load', function () {
         });
     });
 });
-//enter Lat Long
-//enter Lat Long
-//enter Lat Long
-map.on('load', function () {
+//enter Lat Long for nearest neghibour
+//enter Lat Long for nearest neghibour
+//enter Lat Long for nearest neghibour
+map.on('load', function() {
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
 
         //clear
-        $('#findClearNearest').click(function () {
+        $('#findClearNearest').click(function() {
 
             map.removeLayer("points");
             map.removeSource("point");
@@ -181,30 +181,30 @@ map.on('load', function () {
         });
 
         //create
-        $('#findNearest').click(function () {
-          
+        $('#findNearest').click(function() {
+
             var enterLng = $("#lngInputs").val()
             var enterLat = $("#latInputs").val()
-            
+
             var enterLL = turf.point([enterLng, enterLat]);
-            
-             $.getJSON("http://localhost:8080/click/?lngLat="+ enterLng +","+ enterLat)
-            .done(function(json) {
-                console.log(json.features)
-                map.addSource('point',{
-                    'type':'geojson',
-                    'data':json
-                 });
-                 map.addLayer({
-                     'id':'points',
-                     'source':'point',
-                     'type': 'circle',
-                    'paint': {
-                    'circle-radius': 6,
-                    'circle-color':'#B42222'
-                    }
-                 });
-            })
+
+            $.getJSON("http://localhost:8080/click/?lngLat=" + enterLng + "," + enterLat)
+                .done(function(json) {
+                    console.log(json.features)
+                    map.addSource('point', {
+                        'type': 'geojson',
+                        'data': json
+                    });
+                    map.addLayer({
+                        'id': 'points',
+                        'source': 'point',
+                        'type': 'circle',
+                        'paint': {
+                            'circle-radius': 6,
+                            'circle-color': '#B42222'
+                        }
+                    });
+                })
 
             map.flyTo({
                 center: [enterLng, enterLat]
@@ -213,27 +213,167 @@ map.on('load', function () {
         });
     });
 });
-// Coordinates Tool
-// Coordinates Tool
-// Coordinates Tool
-map.on(touchEvent, function (e) {
-    var json ={
-        "type":"Feature",
-        "geometry":{
-            "type":"Point",
-            "coordinate":[e.lngLat.toArray()]
-        },
-        "properties":{
-            
+// draw line between two points and calc distance
+// draw line between two points and calc distance
+// draw line between two points and calc distance
+$('#CitySelectA').hide();
+$('#CitySelectB').hide();
+
+$("#clearCity").click(function(event) {
+    $("#PickCityA").val("");
+    $('#CitySelectA').html("");
+    $("#PickCityB").val("");
+    $('#CitySelectB').html("");
+    lineAnswers = document.getElementById('calculated-length2');
+    lineAnswers.innerHTML = '<p>'
+    '</p>';
+    map.removeLayer("route");
+    map.removeSource("route");
+
+    if (map.getLayer("route")) {
+        map.removeLayer("route");
+        map.removeSource("route");
+    }
+});
+
+
+$("#CitySelectA").click(function(event) {
+    let city = $("#CitySelectA option:selected").text();
+    $("#PickCityA").val(city);
+    $('#CitySelectA').hide();
+});
+$("#CitySelectB").click(function(event) {
+    let city = $("#CitySelectB option:selected").text();
+    $("#PickCityB").val(city);
+    $('#CitySelectB').hide();
+});
+
+$("#searchCity").click(function(event) {
+    let CityA = $("#CitySelectA").val();
+    let CityB = $("#CitySelectB").val();
+    var res = CityA.concat(",", CityB);
+    var splited = CityA.split(",");
+    var splited2 = CityB.split(",");
+    var lng = parseFloat(splited[0]);
+    var lat = parseFloat(splited[1]);
+    var lng1 = parseFloat(splited2[0]);
+    var lat1 = parseFloat(splited2[1]);
+
+    $.get("http://localhost:8080/distance/?lnglat=" + res)
+        .done(function(data) {
+            console.log(data)
+            addLayer(lng, lat, lng1, lat1)
+            lineAnswers = document.getElementById('calculated-length2');
+            lineAnswers.innerHTML = '<p>' + data + ' miles</p>';
+        });
+
+});
+
+function addLayer(lng, lat, lng1, lat1) {
+
+    map.addSource('route', {
+        'type': 'geojson',
+        'data': {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': [
+                    [lng, lat],
+                    [lng1, lat1]
+                ]
+            }
         }
-       
+    });
+
+    map.addLayer({
+        'id': 'route',
+        'type': 'line',
+        'source': 'route',
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': '#FF0000',
+            'line-width': 8
+        }
+    });
+}
+
+$("#PickCityA").keyup(function(event) {
+    populateCitySelectA();
+});
+
+
+// populate citiy A
+function populateCitySelectA() {
+    let filter = $("#PickCityA").val();
+    let html = '';
+    $.get("http://localhost:8080/cities?filter=" + filter, function(data) {
+        $('#CitySelectA').show();
+        for (var i = 0; i < data['count']; i++) {
+
+            html += "<option value ='" + data['results'][i].Coordinates + " '>" + data['results'][i].Name + "</option>";
+        }
+        $('#CitySelectA').attr("size", data['count']);
+        $('#CitySelectA').html(html);
+
+    });
+}
+$("#PickCityB").keyup(function(event) {
+    populateCitySelectB();
+});
+// populate citiy B
+function populateCitySelectB() {
+    let filter = $("#PickCityB").val();
+
+    let html = '';
+    $.get("http://localhost:8080/cities?filter=" + filter, function(data) {
+        $('#CitySelectB').show();
+        for (var i = 0; i < data['count']; i++) {
+            html += "<option value ='" + data['results'][i].Coordinates + " '>" + data['results'][i].Name + "</option>";
+
+        }
+        $('#CitySelectB').attr("size", data['count']);
+        $('#CitySelectB').html(html);
+
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Coordinates Tool
+// Coordinates Tool
+// Coordinates Tool
+map.on(touchEvent, function(e) {
+    var json = {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinate": [e.lngLat.toArray()]
+        },
+        "properties": {
+
+        }
+
     };
     console.log(json)
     document.getElementById('info').innerHTML =
-        JSON.stringify(e.lngLat, function (key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
-// create json to store
-// create json to store
-// create json to store
+        JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
+        // create json to store
+        // create json to store
+        // create json to store
 
 });
 
@@ -249,7 +389,7 @@ var emptyGJ = {
     'features': []
 };
 
-map.on('load', function () {
+map.on('load', function() {
 
     //monster layers
     //Mr. Claw layer sources
@@ -263,7 +403,7 @@ map.on('load', function () {
         "type": "fill",
         "source": "monster",
         "layout": {
-      //"visibility": 'none'
+            //"visibility": 'none'
         },
         "paint": {
             'fill-color': '#b30000',
@@ -448,13 +588,13 @@ map.on('load', function () {
     //Layer Info function
     //Layer Info function
     //Layer Info function
-    map.on(touchEvent, function (e) {
+    map.on(touchEvent, function(e) {
 
         document.getElementById("layer-attribute").innerHTML = "";
 
     });
 
-    map.on(touchEvent, function (e) {
+    map.on(touchEvent, function(e) {
 
         var popup = new mapboxgl.Popup();
         var feature;
@@ -468,12 +608,12 @@ map.on('load', function () {
             feature = map.queryRenderedFeatures(e.point, { layers: ['populated'] })[0];
 
             append.innerHTML +=
-                  '<h5>Populated Places</h5>' +
-                  '<hr>' +
-                  '<b>City: </b>' + feature.properties.name +
-                  '<hr>' +
-                  '<b>Country: </b>' + feature.properties.sov0name +
-                  '<hr>'
+                '<h5>Populated Places</h5>' +
+                '<hr>' +
+                '<b>City: </b>' + feature.properties.name +
+                '<hr>' +
+                '<b>Country: </b>' + feature.properties.sov0name +
+                '<hr>'
         }
 
         if (map.queryRenderedFeatures(e.point, { layers: ['country'] }).length) {
@@ -481,12 +621,12 @@ map.on('load', function () {
             feature = map.queryRenderedFeatures(e.point, { layers: ['country'] })[0];
 
             append.innerHTML +=
-              '<h5>Country</h5>' +
-              '<hr>' +
-              '<b>Port Name </b>' + feature.properties.admin +
-              '<hr>' +
-              '<b>Code: </b>' + feature.properties.adm0_a3 +
-              '<hr>'
+                '<h5>Country</h5>' +
+                '<hr>' +
+                '<b>Port Name </b>' + feature.properties.admin +
+                '<hr>' +
+                '<b>Code: </b>' + feature.properties.adm0_a3 +
+                '<hr>'
         }
 
         //Monster - Layer Info
@@ -496,16 +636,16 @@ map.on('load', function () {
             feature = map.queryRenderedFeatures(e.point, { layers: ['monster'] })[0];
 
             append.innerHTML +=
-                  '<h5>Monster Info</h5>' +
-                  '<hr>' +
-                  '<b>Name: </b>' + 'Mr. Claw' +
-                  '<hr>' +
-                  '<b>Place of Birth: </b>' + 'Atlantic Ocean' +
-                  '<hr>' +
-                  '<b>Likes: </b>' + 'Birthday Parties' +
-                  '<hr>' +
-                  '<b>Dislikes: </b>' + 'Seafood Festivals' +
-                  '<hr>'
+                '<h5>Monster Info</h5>' +
+                '<hr>' +
+                '<b>Name: </b>' + 'Mr. Claw' +
+                '<hr>' +
+                '<b>Place of Birth: </b>' + 'Atlantic Ocean' +
+                '<hr>' +
+                '<b>Likes: </b>' + 'Birthday Parties' +
+                '<hr>' +
+                '<b>Dislikes: </b>' + 'Seafood Festivals' +
+                '<hr>'
         }
 
         //Monster - Layer Info
@@ -515,16 +655,16 @@ map.on('load', function () {
             feature = map.queryRenderedFeatures(e.point, { layers: ['octo'] })[0];
 
             append.innerHTML +=
-                  '<h5>Monster Info</h5>' +
-                  '<hr>' +
-                  '<b>Name: </b>' + 'Mr. Octo' +
-                  '<hr>' +
-                  '<b>Place of Birth: </b>' + 'Pacific Ocean' +
-                  '<hr>' +
-                  '<b>Likes: </b>' + 'Big Salads' +
-                  '<hr>' +
-                  '<b>Dislikes: </b>' + 'Jules Verne' +
-                  '<hr>'
+                '<h5>Monster Info</h5>' +
+                '<hr>' +
+                '<b>Name: </b>' + 'Mr. Octo' +
+                '<hr>' +
+                '<b>Place of Birth: </b>' + 'Pacific Ocean' +
+                '<hr>' +
+                '<b>Likes: </b>' + 'Big Salads' +
+                '<hr>' +
+                '<b>Dislikes: </b>' + 'Jules Verne' +
+                '<hr>'
         }
 
 
@@ -535,10 +675,10 @@ map.on('load', function () {
             feature = map.queryRenderedFeatures(e.point, { layers: ['ocean'] })[0];
 
             append.innerHTML +=
-                  '<h5>Oceans</h5>' +
-                  '<hr>' +
-                  '<b>Name: </b>' + feature.properties.name +
-                  '<hr>'
+                '<h5>Oceans</h5>' +
+                '<hr>' +
+                '<b>Name: </b>' + feature.properties.name +
+                '<hr>'
         }
 
         if (map.queryRenderedFeatures(e.point, { layers: ['river'] }).length) {
@@ -546,15 +686,15 @@ map.on('load', function () {
             feature = map.queryRenderedFeatures(e.point, { layers: ['river'] })[0];
 
             append.innerHTML +=
-                  '<h5>Major Rivers</h5>' +
-                  '<hr>' +
-                  '<b>Name: </b>' + feature.properties.name +
-                  '<hr>'
+                '<h5>Major Rivers</h5>' +
+                '<hr>' +
+                '<b>Name: </b>' + feature.properties.name +
+                '<hr>'
         }
     });
 
     //cursor = pointer on hover configuration
-    map.on('mousemove', function (e) {
+    map.on('mousemove', function(e) {
         var features = map.queryRenderedFeatures(e.point, {
             layers: ['ocean', 'river', 'country', 'populated', 'monster', 'octo']
         });
@@ -565,7 +705,7 @@ map.on('load', function () {
     //Highlight Features Function
     //Highlight Features Function
     //Highlight Features Function
-    map.on(touchEvent, function (e) {
+    map.on(touchEvent, function(e) {
         var features = map.queryRenderedFeatures(e.point, { layers: ["populated"] });
 
         if (map.getLayer("populated_hl")) {
@@ -588,7 +728,7 @@ map.on('load', function () {
         }
     });
 
-    map.on(touchEvent, function (e) {
+    map.on(touchEvent, function(e) {
         var features = map.queryRenderedFeatures(e.point, { layers: ["country"] });
 
         if (map.getLayer("country_hl")) {
@@ -612,7 +752,7 @@ map.on('load', function () {
     });
 
     //Highlight - Mr. Claw
-    map.on(touchEvent, function (e) {
+    map.on(touchEvent, function(e) {
         var features = map.queryRenderedFeatures(e.point, { layers: ["monster"] });
 
         if (map.getLayer("monster_hl")) {
@@ -636,7 +776,7 @@ map.on('load', function () {
     });
 
     //Highlight - Mr. Octo
-    map.on(touchEvent, function (e) {
+    map.on(touchEvent, function(e) {
         var features = map.queryRenderedFeatures(e.point, { layers: ["octo"] });
 
         if (map.getLayer("octo_hl")) {
@@ -660,7 +800,7 @@ map.on('load', function () {
     });
 
     //Highlight - Physical
-    map.on(touchEvent, function (e) {
+    map.on(touchEvent, function(e) {
         var features = map.queryRenderedFeatures(e.point, { layers: ["river"] });
 
         if (map.getLayer("river_hl")) {
@@ -683,7 +823,7 @@ map.on('load', function () {
         }
     });
 
-    map.on(touchEvent, function (e) {
+    map.on(touchEvent, function(e) {
         var features = map.queryRenderedFeatures(e.point, { layers: ["ocean"] });
 
         if (map.getLayer("ocean_hl")) {
@@ -710,9 +850,7 @@ map.on('load', function () {
 // Directory Options
 // Directory Options
 // Directory Options - open or closed by defualt (true/false)
-var directoryOptions =
-[
-    {
+var directoryOptions = [{
         'name': 'Monsters',
         'open': true
     },
@@ -730,118 +868,116 @@ var directoryOptions =
 // organize layers in the layer tree
 var layers =
 
-[
-    // Mr Claw LAYER TREE CONFIG
-    // Mr Claw LAYER TREE CONFIG
-    {
-        'name': 'Mr Claw',
-        'id': 'monster_group',
-        'hideLabel': ['mouth', 'water-line', 'eyes', 'monster'],
-        'icon': 'assets/images/layer-stack-15.svg',
-        'layerGroup': [
-            {
-                'id': 'monster',
-                'source': 'monster',
-                'name': 'Mr. Claw',
-                'path': 'assets/json/monster.json',
-            },
-            {
-                'id': 'mouth',
-                'source': 'mouth',
-                'name': 'Mouth',
-                'path': 'assets/json/mouth.json',
-            },
-            {
-                'id': 'water-line',
-                'source': 'water-line',
-                'name': 'Water',
-                'path': 'assets/json/water.json',
-            },
-            {
-                'id': 'eyes',
-                'source': 'eyes',
-                'name': 'Eyes',
-                'path': 'assets/json/eyes.json',
-            },
+    [
+        // Mr Claw LAYER TREE CONFIG
+        // Mr Claw LAYER TREE CONFIG
+        {
+            'name': 'Mr Claw',
+            'id': 'monster_group',
+            'hideLabel': ['mouth', 'water-line', 'eyes', 'monster'],
+            'icon': 'assets/images/layer-stack-15.svg',
+            'layerGroup': [{
+                    'id': 'monster',
+                    'source': 'monster',
+                    'name': 'Mr. Claw',
+                    'path': 'assets/json/monster.json',
+                },
+                {
+                    'id': 'mouth',
+                    'source': 'mouth',
+                    'name': 'Mouth',
+                    'path': 'assets/json/mouth.json',
+                },
+                {
+                    'id': 'water-line',
+                    'source': 'water-line',
+                    'name': 'Water',
+                    'path': 'assets/json/water.json',
+                },
+                {
+                    'id': 'eyes',
+                    'source': 'eyes',
+                    'name': 'Eyes',
+                    'path': 'assets/json/eyes.json',
+                },
 
-        ],
-        'directory': 'Monsters'
-    },
+            ],
+            'directory': 'Monsters'
+        },
 
-    // Mr Octo LAYER TREE CONFIG
-    // Mr Octo LAYER TREE CONFIG
-    {
-        'name': 'Mr. Octo',
-        'id': 'monster_group_2',
-        'hideLabel': ['octo', 'water-line-2', 'eyes2', 'mouth2'],
-        'icon': 'assets/images/layer-stack-15.svg',
-        'layerGroup': [
-            {
-                'id': 'octo',
-                'source': 'octo',
-                'name': 'Mr. Octo',
-                'path': 'assets/json/octo.json',
-            },
-            {
-                'id': 'water-line-2',
-                'source': 'water-line-2',
-                'name': 'Water',
-                'path': 'assets/json/water2.json',
-            },
-            {
-                'id': 'mouth2',
-                'source': 'mouth2',
-                'name': 'Mouth',
-                'path': 'assets/json/mouth2.json',
-            },
-            {
-                'id': 'eyes2',
-                'source': 'eyes2',
-                'name': 'Eyes',
-                'path': 'assets/json/eyes2.json',
-            },
-        ],
-        'directory': 'Monsters'
-    },
+        // Mr Octo LAYER TREE CONFIG
+        // Mr Octo LAYER TREE CONFIG
+        {
+            'name': 'Mr. Octo',
+            'id': 'monster_group_2',
+            'hideLabel': ['octo', 'water-line-2', 'eyes2', 'mouth2'],
+            'icon': 'assets/images/layer-stack-15.svg',
+            'layerGroup': [{
+                    'id': 'octo',
+                    'source': 'octo',
+                    'name': 'Mr. Octo',
+                    'path': 'assets/json/octo.json',
+                },
+                {
+                    'id': 'water-line-2',
+                    'source': 'water-line-2',
+                    'name': 'Water',
+                    'path': 'assets/json/water2.json',
+                },
+                {
+                    'id': 'mouth2',
+                    'source': 'mouth2',
+                    'name': 'Mouth',
+                    'path': 'assets/json/mouth2.json',
+                },
+                {
+                    'id': 'eyes2',
+                    'source': 'eyes2',
+                    'name': 'Eyes',
+                    'path': 'assets/json/eyes2.json',
+                },
+            ],
+            'directory': 'Monsters'
+        },
 
-     // Cultural LAYER TREE CONFIG
-     // Cultural LAYER TREE CONFIG
+        // Cultural LAYER TREE CONFIG
+        // Cultural LAYER TREE CONFIG
 
-    {
-        'name': 'Populated Places',
-        'id': 'populated',
-        'source': "populated",
-        'path': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_populated_places_simple.geojson',
-        'directory': 'Cultural',
-    },
-    {
-        'name': 'Countries',
-        'id': 'country',
-        'source': 'country',
-        'path': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_0_map_units.geojson',
-        'directory': 'Cultural',
-    },
+        {
+            'name': 'Populated Places',
+            'id': 'populated',
+            'source': "populated",
+            'path': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_populated_places_simple.geojson',
+            'directory': 'Cultural',
+        },
+        {
+            'name': 'Countries',
+            'id': 'country',
+            'source': 'country',
+            'path': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_0_map_units.geojson',
+            'directory': 'Cultural',
+        },
 
 
-    // Physical LAYER TREE CONFIG
-    // Physical LAYER TREE CONFIG
+        // Physical LAYER TREE CONFIG
+        // Physical LAYER TREE CONFIG
 
-    {
-        'name': 'Major Rivers',
-        'id': 'river',
-        'source': 'river',
-        'path': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_rivers_lake_centerlines.geojson',
-        'directory': 'Physical',
-    },
-    {
-        'name': 'Oceans',
-        'id': 'ocean',
-        'source': 'ocean',
-        'path': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_geography_marine_polys.geojson',
-        'directory': 'Physical',
-    },
+        {
+            'name': 'Major Rivers',
+            'id': 'river',
+            'source': 'river',
+            'path': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_rivers_lake_centerlines.geojson',
+            'directory': 'Physical',
+        },
+        {
+            'name': 'Oceans',
+            'id': 'ocean',
+            'source': 'ocean',
+            'path': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_geography_marine_polys.geojson',
+            'directory': 'Physical',
+        },
 
-];
+    ];
 
 
 var layerList = new LayerTree({ layers: layers, directoryOptions: directoryOptions, onClickLoad: true });
@@ -854,14 +990,14 @@ layerTool.appendChild(layerList.onAdd(map))
 //BOOKMARKS
 //BOOKMARKS
 
-document.getElementById('icelandBookmark').addEventListener('click', function () {
+document.getElementById('icelandBookmark').addEventListener('click', function() {
     map.flyTo({
         center: [-18.7457, 65.0662],
         zoom: 5,
     });
 });
 
-document.getElementById('safricaBookmark').addEventListener('click', function () {
+document.getElementById('safricaBookmark').addEventListener('click', function() {
 
     map.flyTo({
         center: [23.9417, -29.5353],
@@ -869,7 +1005,7 @@ document.getElementById('safricaBookmark').addEventListener('click', function ()
     });
 });
 
-document.getElementById('japanBookmark').addEventListener('click', function () {
+document.getElementById('japanBookmark').addEventListener('click', function() {
 
     map.flyTo({
         center: [138.6098, 36.3223],
@@ -877,7 +1013,7 @@ document.getElementById('japanBookmark').addEventListener('click', function () {
     });
 });
 
-document.getElementById('australiaBookmark').addEventListener('click', function () {
+document.getElementById('australiaBookmark').addEventListener('click', function() {
 
     map.flyTo({
         center: [134.1673, -25.6855],
@@ -930,8 +1066,9 @@ function activateTool(el) {
 
 //generate unique layer ids for text-labels
 function generateTextID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
@@ -956,16 +1093,14 @@ function markerToSymbol(e, elm) {
 
         var labelGJ = {
             "type": "FeatureCollection",
-            "features": [
-              {
-                  "type": "Feature",
-                  "properties": {},
-                  "geometry": {
-                      "type": "Point",
-                      "coordinates": coords
-                  }
-              }
-            ]
+            "features": [{
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": coords
+                }
+            }]
         };
 
         var id = generateTextID();
@@ -1141,7 +1276,7 @@ function stopDrag(e) {
 
     map.dragPan.enable();
 
-    setTimeout(function () {
+    setTimeout(function() {
         markerToSymbol(e, textSpan);
     }, 50)
 
@@ -1157,7 +1292,10 @@ function addEditLabels(e) {
     if (isDragging) return;
 
     //create a large bounding box for capture
-    var clickBBox = [[e.point.x - 2, e.point.y - 2], [e.point.x + 2, e.point.y + 2]];
+    var clickBBox = [
+        [e.point.x - 2, e.point.y - 2],
+        [e.point.x + 2, e.point.y + 2]
+    ];
 
     //adding text
     if (LABEL_NODE.getAttribute('active') === 'true') {
@@ -1170,7 +1308,7 @@ function addEditLabels(e) {
         el.setAttribute('spellcheck', 'false');
         el.setAttribute('lng', e.lngLat.lng);
         el.setAttribute('lat', e.lngLat.lat);
-        el.style['font-size'] = TEXT_SIZES[1] + 'px';  //defaulting to second size
+        el.style['font-size'] = TEXT_SIZES[1] + 'px'; //defaulting to second size
 
         map.marker = createMarker(e, el);
 
@@ -1506,8 +1644,7 @@ var draw = new MapboxDraw({
         {
             'id': 'gl-draw-point-static',
             'type': 'circle',
-            'filter': ['all',
-                ['==', 'mode', 'static'],
+            'filter': ['all', ['==', 'mode', 'static'],
                 ['==', '$type', 'Point']
             ],
             'paint': {
@@ -1790,8 +1927,7 @@ var draw = new MapboxDraw({
         {
             'id': 'gl-draw-point-static-color-picker',
             'type': 'circle',
-            'filter': ['all',
-                ['==', 'mode', 'static'],
+            'filter': ['all', ['==', 'mode', 'static'],
                 ['==', '$type', 'Point'],
                 ['has', 'user_portColor']
             ],
@@ -1825,7 +1961,7 @@ function populateDrawPalette() {
 
 function handlePolygonOrder(clickedFeats) {
     if (clickedFeats.length > 1) {
-        var tempTrack = trackDrawnPolygons.filter(function (p) {
+        var tempTrack = trackDrawnPolygons.filter(function(p) {
             return clickedFeats.indexOf(p) > -1;
         });
 
@@ -1864,7 +2000,7 @@ function handleVerticesColors(color) {
 }
 
 // color change function of draw features
-var changeDrawColor = function (e) {
+var changeDrawColor = function(e) {
 
     if (e.target.id && e.target.id.indexOf('draw-') === -1) return;
 
@@ -1878,7 +2014,7 @@ var changeDrawColor = function (e) {
 
         // race conditions exist between events
         // and draw's transitions between .hot and .cold layers
-        setTimeout(function () {
+        setTimeout(function() {
             handleVerticesColors(color);
         }, 50);
     }
@@ -1886,7 +2022,7 @@ var changeDrawColor = function (e) {
 };
 
 // callback for draw.update and draw.selectionchange
-var setDrawFeature = function (e) {
+var setDrawFeature = function(e) {
     if (e.features.length && e.features[0].type === 'Feature') {
         var feat = e.features[0];
         drawFeatureID = feat.id;
@@ -1899,7 +2035,7 @@ var setDrawFeature = function (e) {
 
             // race conditions exist between events
             // and draw's transitions between .hot and .cold layers
-            setTimeout(function () {
+            setTimeout(function() {
                 handleVerticesColors(c);
             }, 50);
         }
@@ -1907,7 +2043,7 @@ var setDrawFeature = function (e) {
 };
 
 // Event Handlers for Draw Tools
-map.on('draw.create', function (e) {
+map.on('draw.create', function(e) {
     newDrawFeature = true;
     if (e.features.length && e.features[0].geometry.type === 'Polygon') {
         trackDrawnPolygons.push(e.features[0].id);
@@ -1915,7 +2051,7 @@ map.on('draw.create', function (e) {
 });
 
 // track handling for polygon features
-map.on('draw.delete', function (e) {
+map.on('draw.delete', function(e) {
     if (e.features.length) {
         var feats = e.features;
         var featsToRemove = [];
@@ -1924,7 +2060,7 @@ map.on('draw.delete', function (e) {
             featsToRemove.push(feats[i].id);
         }
 
-        var tempTrack = trackDrawnPolygons.filter(function (p) {
+        var tempTrack = trackDrawnPolygons.filter(function(p) {
             return featsToRemove.indexOf(p) < 0;
         });
 
@@ -1935,7 +2071,7 @@ map.on('draw.delete', function (e) {
 map.on('draw.update', setDrawFeature);
 map.on('draw.selectionchange', setDrawFeature);
 
-map.on('click', function (e) {
+map.on('click', function(e) {
     if (getLastDrawnPoly) {
         var clickedFeats = draw.getFeatureIdsAt(e.point);
         handlePolygonOrder(clickedFeats);
@@ -2047,7 +2183,7 @@ function calculateDimensions(data) {
 
 // callback fires on the events listed below and fires the
 // above calculateDimensions function
-var calculateCallback = function (e) {
+var calculateCallback = function(e) {
     if (e.features.length && (e.features[0].geometry.type === 'Polygon' || e.features[0].geometry.type === 'LineString')) {
         measurementActive = true;
         selectedMeasuredFeature = e.features[0].id;
@@ -2059,7 +2195,7 @@ map.on('draw.create', calculateCallback);
 map.on('draw.update', calculateCallback);
 map.on('draw.selectionchange', calculateCallback);
 
-map.on('draw.delete', function (e) {
+map.on('draw.delete', function(e) {
     selectedMeasuredFeature = '';
     measurementActive = false;
     removeMeasurementValues();
@@ -2069,13 +2205,13 @@ map.on('draw.delete', function (e) {
 // of a newly instantiated feature that has yet to be 'created'
 // or perhaps it's not documented anywhere in GL Draw
 // so we have to make our own
-map.on('mousemove', function (e) {
+map.on('mousemove', function(e) {
     if (draw.getMode() === 'draw_line_string' || draw.getMode() === 'draw_polygon') {
         var linePts = draw.getFeatureIdsAt(e.point);
 
         if (linePts.length) {
             // some draw features return back as undefined
-            var activeID = linePts.filter(function (feat) {
+            var activeID = linePts.filter(function(feat) {
                 return typeof feat === 'string';
             })
 
@@ -2099,13 +2235,13 @@ map.on('mousemove', function (e) {
 //
 
 // remove measurements from input
-map.on('click', function (e) {
+map.on('click', function(e) {
     if (measurementActive) {
         var measuredFeature = draw.getFeatureIdsAt(e.point);
 
         if (measuredFeature.length) {
             // some draw features return back as undefined
-            var mF = measuredFeature.filter(function (feat) {
+            var mF = measuredFeature.filter(function(feat) {
                 return typeof feat === 'string';
             })
 
@@ -2122,11 +2258,11 @@ map.on('click', function (e) {
 });
 
 
-$(function () {
+$(function() {
     // set unit value
     selectedUnits = $('input[type=radio][name=unit]:checked').val();
 
-    $('input[type=radio][name=unit]').change(function () {
+    $('input[type=radio][name=unit]').change(function() {
         selectedUnits = this.value;
 
         //update values based on new units

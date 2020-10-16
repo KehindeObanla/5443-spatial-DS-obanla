@@ -1,11 +1,9 @@
-
 input:focus,
 select:focus,
 textarea:focus,
 button:focus {
     outline: none;
 }
-
 
 #info {
     display: block;
@@ -69,7 +67,9 @@ button:focus {
     cursor: pointer;
 }
 
-#calculated-area, #calculated-length {
+#calculated-area,
+#calculated-length,
+#calculated-length2 {
     height: 30px;
     width: 100%;
     background-color: #e8e8e8;
@@ -82,7 +82,6 @@ button:focus {
     margin-bottom: 10px;
     font-size: 12px;
 }
-
 
 .no-js #loader {
     display: none;
@@ -104,7 +103,6 @@ button:focus {
     z-index: 9999;
     background: rgba(61, 68, 72, 1.0);
 }
-
 
 #saveButton {
     max-height: 40px;
@@ -170,6 +168,46 @@ button:focus {
     cursor: pointer;
 }
 
+#searchCity {
+    min-height: 40px;
+    width: 50px;
+    background-color: #c5c5c5;
+    border: none;
+    cursor: pointer;
+}
+
+.City-pickerA {
+    padding: 8px 8px;
+    width: 100%;
+    background: #e8e8e8;
+    /* margin-left:10px; */
+    border: none;
+    border-right: none;
+    font-size: 9pt;
+    border-radius: 0;
+    -webkit-appearance: none;
+}
+
+.City-pickerB {
+    padding: 8px 8px;
+    width: 100%;
+    background: #e8e8e8;
+    /* margin-left:10px; */
+    border: none;
+    border-right: none;
+    font-size: 9pt;
+    border-radius: 0;
+    -webkit-appearance: none;
+}
+
+#clearCity {
+    min-height: 40px;
+    width: 50px;
+    color: #fbfbfb;
+    background-color: #a2a2a2;
+    border: none;
+    cursor: pointer;
+}
 
 .ui-autocomplete {
     max-height: 300px;
@@ -185,16 +223,16 @@ button:focus {
     white-space: nowrap;
 }
 
-    .ui-autocomplete .ui-menu-item a.ui-state-focus {
-        background: #c2f0ff !important;
-        padding-right: 100%;
-        border: none;
-        color: #353535;
-        text-decoration: none;
-        font-weight: 600;
-        white-space: nowrap;
-        font-size: small;
-    }
+.ui-autocomplete .ui-menu-item a.ui-state-focus {
+    background: #c2f0ff !important;
+    padding-right: 100%;
+    border: none;
+    color: #353535;
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+    font-size: small;
+}
 
 a {
     color: #1182e2;
@@ -202,10 +240,11 @@ a {
     /* display: block; */
 }
 
-    a:focus, a:hover {
-        color: black;
-        text-decoration: underline;
-    }
+a:focus,
+a:hover {
+    color: black;
+    text-decoration: underline;
+}
 
 .clickable {
     cursor: pointer;
