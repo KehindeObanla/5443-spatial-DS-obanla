@@ -385,12 +385,12 @@ $("#searchRail").click(function(event) {
     $.get("http://localhost:8080/StatesRailroad/?state=" + state)
         .done(function(data) {
             console.log(data)
-            addLayer(data)
+            addLayer1(data)
         });
 
 });
 
-function addLayer(json) {
+function addLayer1(json) {
 
     map.addSource('rout', {
         'type': 'geojson',
