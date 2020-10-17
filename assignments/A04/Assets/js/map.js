@@ -394,7 +394,7 @@ $("#searchRail").click(function(event) {
     let state = $("#stateSelectRail").val();
     $.get("http://localhost:8080/StatesRailroad/?state=" + state)
         .done(function(data) {
-            console.log(data)
+
             if (data['count'] == 1) {
                 getline = document.getElementById('invalidState');
                 getline.style.display = "block"
@@ -409,7 +409,9 @@ $("#searchRail").click(function(event) {
 });
 
 function addLayer1(json) {
-
+    var latlng = json['geometry']['coordinates'][0];
+    var enterLng = latlng[0];
+    var enterLat = latlng[1];
     map.addSource('rout', {
         'type': 'geojson',
         'data': json
@@ -428,6 +430,10 @@ function addLayer1(json) {
             'line-color': '#FF0000',
             'line-width': 1
         }
+    });
+    map.flyTo({
+        center: [enterLng, enterLat],
+        zoom: 4
     });
 }
 
