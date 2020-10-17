@@ -363,13 +363,23 @@ $('#stateSelectRail').hide();
 $("#clearRail").click(function(event) {
     $("#pickStateRail").val("");
     $('#stateSelectRail').html("");
-    map.removeLayer("rout");
-    map.removeSource("rout");
 
-    if (map.getLayer("rout")) {
+    var text = "database does not contain railroad data for selected state"
+    if ($('#invalidState').text() != text) {
         map.removeLayer("rout");
         map.removeSource("rout");
+
+        if (map.getLayer("rout")) {
+            map.removeLayer("rout");
+            map.removeSource("rout");
+        }
     }
+    getline = document.getElementById('invalidState');
+    getline.innerHTML = '<p>'
+    '</p>';
+    getline.style.display = "none"
+
+
 });
 $("#searchStateRail").click(function(event) {
     populateStatesSelect()
@@ -385,7 +395,15 @@ $("#searchRail").click(function(event) {
     $.get("http://localhost:8080/StatesRailroad/?state=" + state)
         .done(function(data) {
             console.log(data)
-            addLayer1(data)
+            if (data['count'] == 1) {
+                getline = document.getElementById('invalidState');
+                getline.style.display = "block"
+                getline.innerHTML = '<p>' + 'database does not contain railroad data for selected state' + '</p>';
+
+            } else {
+                addLayer1(data)
+            }
+
         });
 
 });

@@ -83,6 +83,21 @@ button:focus {
     font-size: 12px;
 }
 
+#invalidState {
+    height: 50px;
+    width: 100%;
+    background-color: #e8e8e8;
+    border: 1px solid rgb(208, 208, 208);
+    color: #4a4a4a;
+    /*border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;*/
+    padding: 6px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-size: 12px;
+    display: none;
+}
+
 .no-js #loader {
     display: none;
 }

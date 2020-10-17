@@ -435,8 +435,11 @@ def railroad():
                         results.append(coord)
            
             answer_Collection["geometry"]["coordinates"] = results
+    if(answer_Collection["geometry"]["coordinates"]) :
+        return answer_Collection
         
-    return answer_Collection
+    return handle_response(answer_Collection) 
+   
    
 
 
