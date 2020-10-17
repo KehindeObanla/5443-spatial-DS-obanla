@@ -241,6 +241,10 @@
                         <a class="clickable" data-toggle="modal" data-target="#nearestlocationModal" title="search nearest neighibours"><i class="fas fa-globe"></i></a>
                     </li>
                     <li>
+                        <!--railroads -->
+                        <a class="clickable" data-toggle="modal" data-target="#usrailroads" title="displayrailroads"><i class="fas fa-train"></i></a>
+                    </li>
+                    <li>
                         <!-- Plane Crash Button -->
                         <a class="clickable" data-toggle="modal" data-target="#testModal" title="Airplane Crashes">
                             <span class="fa-stack">
@@ -503,7 +507,43 @@
                 </div>
             </div>
         </div>
+        <!-- railroad Modal -->
+        <!-- railroad Modal -->
+        <!-- railroad Modal -->
+        <div class="modal left fade" id="usrailroads" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
 
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fas fa-vector-square"></i></i>&nbsp;Display Railroads
+                        </h4>
+                    </div>
+
+                    <div class="modal-body">
+
+
+                        <div style="display: inline-flex;" id="">
+                            <input type="search" id="pickStateRail" placeholder="State" />
+                            <br />
+                            <button class="clickable" type="submit" id="searchStateRail"><i
+                                    class="fa fa-search"></i></button>
+
+                        </div>
+
+                        <select class="state-picker" id="stateSelectRail">
+                        </select>
+                        <div>
+                            <button class="clickable" type="submit" id="searchRail" style="width:40%; margin-top:5%;"><i
+                                class="fa fa-search"></i> submit</button>
+                            <button class="clickable" type="submit" id="clearRail" style="width:40%"><i
+                                class="fa fa-eraser"></i>Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Terry Modal -->
         <!-- Terry Modal -->
         <!-- Terry Modal -->

@@ -358,6 +358,81 @@ function populateCitySelectB() {
 
     });
 }
+//load city for railroads
+$('#stateSelectRail').hide();
+$("#clearRail").click(function(event) {
+    $("#pickStateRail").val("");
+    $('#stateSelectRail').html("");
+    map.removeLayer("rout");
+    map.removeSource("rout");
+
+    if (map.getLayer("rout")) {
+        map.removeLayer("rout");
+        map.removeSource("rout");
+    }
+});
+$("#searchStateRail").click(function(event) {
+    populateStatesSelect()
+});
+$("#stateSelectRail").click(function(event) {
+    let state = $("#stateSelectRail option:selected").text();
+    $("#pickStateRail").val(state);
+    $('#stateSelectRail').hide();
+});
+$("#searchRail").click(function(event) {
+
+    let state = $("#stateSelectRail").val();
+    $.get("http://localhost:8080/StatesRailroad/?state=" + state)
+        .done(function(data) {
+            console.log(data)
+            addLayer(data)
+        });
+
+});
+
+function addLayer(json) {
+
+    map.addSource('rout', {
+        'type': 'geojson',
+        'data': json
+
+    });
+
+    map.addLayer({
+        'id': 'rout',
+        'type': 'line',
+        'source': 'rout',
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': '#FF0000',
+            'line-width': 1
+        }
+    });
+}
+
+$("#pickStateRail").keyup(function(event) {
+    populateStatesSelect();
+});
+
+function populateStatesSelect() {
+    let filter = $("#pickStateRail").val();
+
+    let html = '';
+    $.get("http://localhost:8080/states?filter=" + filter, function(data) {
+        $('#stateSelectRail').show();
+
+        for (var i = 0; i < data['count']; i++) {
+            html += '<option>' + data['results'][i].name + '</option>';
+        }
+
+        $('#stateSelectRail').attr("size", data['count']);
+        $('#stateSelectRail').html(html);
+
+    });
+}
 
 
 
