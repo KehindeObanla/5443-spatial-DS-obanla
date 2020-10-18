@@ -10,8 +10,9 @@ from misc_functions import *
 import glob
 import json
 import math
+from rtree import index
 
-
+idx = index.Index()
 def finddistance():
     """ Description: return a distance between two points
         Params:
@@ -207,7 +208,117 @@ def railroad():
     mylist = list(dict.fromkeys(results))
     print(mylist)
     print(count)
+def validateJSON(jsonData):
+    try:
+        json.loads(jsonData)
+    except ValueError as err:
+        return False
+    return True
+def point_to_bbox(lng, lat, offset=.001):
+    #(left, bottom, right, top)
+
+    return (float(lng-offset), float(lat-offset), float(lng+offset), float(lat+offset))
+def build_index():
+    #(left, bottom, right, top)
+
+    eqks = glob.glob(
+        "assignments\\A04\\Assets\\json\\earthquake_data\\earthquakes\\*.json")
+    del eqks[350:840]
+    count = 0
+    bad = 0
+    earthquakeUniqueid = {}
+
+    for efile in eqks:
+        minlat = 999
+        minlng = 999
+        maxlat = -999
+        maxlng = -999
+        with open(efile, 'r', encoding='utf-8') as f:
+            data = f.readlines()
+
+        for row in data[2:]:
+            row = row.strip()
+            row = row.strip(",")
+            if validateJSON(row):
+                row = json.loads(row)
+                lng, lat, _ = row["geometry"]["coordinates"]
+                earthquakeUniqueid[count] = row
+                if lng < minlng:
+                    minlng = lng
+                if lat < minlat:
+                    minlat = lat
+                if lng > maxlng:
+                    maxlng = lng
+                if lat > maxlat:
+                    maxlat = lat
+
+                left, bottom, right, top = point_to_bbox(lng, lat)
+                idx.insert(count, (left, bottom, right, top))
+                count += 1
+            else:
+                bad += 1
+        """  print(count) """
+    return idx, earthquakeUniqueid
+def nearestNeighbors(lng, lat):
+    answer_Collection = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    answer_CollectionpolyGon = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates':[]
+            }
+            }
+          
+       ]
+    }
+
+    idx, rtreeid = build_index()
+    left, bottom, right, top = point_to_bbox(lng, lat)
+    nearest = list(idx.nearest((left, bottom, right, top), 2))
+    print(nearest)
+    nearestlist = []
+
+    dic ={}
+    polygon =[]
+    
+    # for each id get all other properties from
+    # rtee and add it to a list
+
+    for item in nearest:
+        nearestlist.append({
+            'type': 'Feature',
+            'geometry': rtreeid[item]['geometry'],
+            'properties': rtreeid[item]['properties']
+        })
+        
+        dic = rtreeid[item]['geometry']
+        for key,value in dic.items():
+            if key =='coordinates':
+                lnglat =[]
+                lnglat.append(value[0])
+                lnglat.append(value[1])
+        polygon.append(lnglat)
+                
+    for item in answer_CollectionpolyGon['features']:
+        item['geometry']['coordinates'].append( polygon)
+    print( answer_CollectionpolyGon)
+   # add nearestlist to a dictionary
+   # to make it a geojson file
+    answer_Collection['features'] = nearestlist
+    # convert into JSON:
+    convertedGeojson = json.dumps(answer_CollectionpolyGon)
+    print( convertedGeojson)
+    # the result is a JSON string:
+    # to be used as id in the frontend
+   
 
 
 if __name__ == '__main__':
-    railroad2()
+  nearestNeighbors(-121.353637, 40.584978)
