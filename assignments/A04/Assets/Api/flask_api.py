@@ -183,6 +183,7 @@ def nearestNeighbors(lng, lat):
         "type": "FeatureCollection",
         "features": []
     }
+   
 
     idx, rtreeid = build_index()
     left, bottom, right, top = point_to_bbox(lng, lat)
@@ -198,6 +199,7 @@ def nearestNeighbors(lng, lat):
             'geometry': rtreeid[item]['geometry'],
             'properties': rtreeid[item]['properties']
         })
+    
    # add nearestlist to a dictionary
    # to make it a geojson file
     answer_Collection['features'] = nearestlist

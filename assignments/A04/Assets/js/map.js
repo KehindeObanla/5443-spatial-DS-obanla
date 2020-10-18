@@ -190,10 +190,12 @@ map.on('load', function() {
 
             $.getJSON("http://localhost:8080/click/?lngLat=" + enterLng + "," + enterLat)
                 .done(function(json) {
-                    console.log(json.features)
+                    console.log(json)
+
                     map.addSource('point', {
                         'type': 'geojson',
                         'data': json
+                            // poly
                     });
                     map.addLayer({
                         'id': 'points',
@@ -204,6 +206,9 @@ map.on('load', function() {
                             'circle-color': '#B42222'
                         }
                     });
+
+
+                    addpolygonlayer(addPolygon(json));
                 })
 
             map.flyTo({
@@ -213,6 +218,35 @@ map.on('load', function() {
         });
     });
 });
+// function to add polygon to nearest points
+function addPolygon(feature) {
+    if (document.getElementById("addPolygon").checked == true) {
+        var enveloped = turf.envelope(feature);
+        return enveloped;
+
+    }
+
+}
+
+function addpolygonlayer(json) {
+    console.log("entered");
+    map.addSource('national-park', {
+        'type': 'geojson',
+        'data': json
+            // poly
+    });
+    map.addLayer({
+        'id': 'park-boundary',
+        'type': 'fill',
+        'source': 'national-park',
+        'paint': {
+            'fill-color': '#020000',
+            'fill-opacity': 0.4
+        },
+        'filter': ['==', '$type', 'Polygon']
+    });
+
+}
 // draw line between two points and calc distance
 // draw line between two points and calc distance
 // draw line between two points and calc distance
@@ -457,8 +491,12 @@ function populateStatesSelect() {
 
     });
 }
-
-
+/* uplaod or paste geojson */
+/* uplaod or paste geojson */
+/* uplaod or paste geojson */
+if ($.trim($("#TexrareaGeo").val())) {
+    let data = $("#TexrareaGeo").val();
+}
 
 
 
