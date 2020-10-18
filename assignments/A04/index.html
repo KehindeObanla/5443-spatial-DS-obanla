@@ -425,15 +425,15 @@
 
                         <p style="font-size: 12px"><i class="fas fa-ruler"></i> select two cities to calculate distance.</p>
                         <div style="display: inline-flex;" id="">
-                            <input type="search" id=PickCityA placeholder="City A" style="margin-bottom: 5%;" />
-                            <button class="clickable" type="submit" id="searchACity" style="margin-bottom: 5%;"><i
+                            <input type="search" id=PickCityA placeholder="City A" style="margin-bottom:5%;" />
+                            <button class="clickable" type="submit" id="searchACity" style="margin-bottom:5%;"><i
                                 class="fa fa-search"></i></button>
                         </div>
                         <select class="City-pickerA" id="CitySelectA"></select>
                         <br />
                         <div style="display: inline-flex;" id="">
-                            <input type="search" id=PickCityB placeholder="City B" style="margin-top: 5%;" />
-                            <button class="clickable" type="submit" id="searchBCity" style="margin-top: 5%;"><i
+                            <input type="search" id=PickCityB placeholder="City B" style="margin-top:5%;" />
+                            <button class="clickable" type="submit" id="searchBCity" style="margin-top:5%;"><i
                                 class="fa fa-search"></i></button>
                         </div>
                         <br/>
@@ -511,39 +511,39 @@
     <!-- Search Modal -->
     <!-- Search Modal -->
     <!-- Search Modal -->
-    <div class="modal left fade " id="searchModal " tabindex="-1 " role="dialog " aria-labelledby="myModalLabel ">
-        <div class="modal-dialog " role="document ">
+    <div class="modal left fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
             <div class="modal-content ">
 
-                <div class="modal-header ">
-                    <button type="button " class="close " data-dismiss="modal " aria-label="Close "><span
-                                aria-hidden="true ">&times;</span></button>
-                    <h4 class="modal-title " id="myModalLabel "><i class="fa fa-fw fa-search "></i>&nbsp;Search Tools
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-fw fa-search"></i>&nbsp;Search Tools
                     </h4>
                 </div>
 
-                <div class="modal-body ">
-                    <p style="margin-bottom: -1px; padding: 0px 0px 5px 0px; width: 100%; "><br />Step 1. Pick searchable layer...</p>
-                    <select class="layer-picker " id="json_layer " data-placeholder="Layer Picker "></select>
+                <div class="modal-body">
+                    <p style="margin-bottom: -1px; padding: 0px 0px 5px 0px; width: 100%;"><br />Step 1. Pick searchable layer...</p>
+                    <select class="layer-picker" id="json_layer" data-placeholder="Layer Picker"></select>
                     <br />
-                    <p style="margin-bottom: -1px; padding: 0px 0px 5px 0px; width: 100%; "><br />Step 2. Start searching...
+                    <p style="margin-bottom: -1px; padding: 0px 0px 5px 0px; width: 100%;"><br />Step 2. Start searching...
                     </p>
-                    <p style="margin-bottom: -1px; padding: 5px 5px 5px 5px; width: 100%; background-color: #fafafa; color: #528ea7; font-size: smaller; " id="property-descr "><br /></p>
+                    <p style="margin-bottom: -1px; padding: 5px 5px 5px 5px; width: 100%; background-color: #fafafa; color: #528ea7; font-size: smaller;" id="property-descr"><br /></p>
 
-                    <div style="display: inline-flex; " id="target_layer ">
-                        <input type="search " id="general_search " placeholder="Properties " />
-                        <input type="hidden " id="property-value "><br />
-                        <button class="clickable " type="submit " id="search_general "><i
+                    <div style="display: inline-flex; " id="target_layer">
+                        <input type="search" id="general_search" placeholder="Properties" />
+                        <input type="hidden" id="property-value"><br />
+                        <button class="clickable" type="submit" id="search_general"><i
                                     class="fa fa-search "></i></button>
-                        <button class="clickable " type="submit " id="clear_general "><i
+                        <button class="clickable" type="submit" id="clear_general"><i
                                     class="fa fa-eraser "></i></button>
                     </div>
 
                     <script>
                         //Allows user to hit enter to search for json property
-                        $("#general_search ").keyup(function(event) {
+                        $("#general_search").keyup(function(event) {
                             if (event.keyCode == 13) {
-                                $("#search_general ").click();
+                                $("#search_general").click();
                             }
                         });
                     </script>
@@ -555,35 +555,35 @@
     <!-- railroad Modal -->
     <!-- railroad Modal -->
     <!-- railroad Modal -->
-    <div class="modal left fade " id="usrailroads " tabindex="-1 " role="dialog " aria-labelledby="myModalLabel ">
-        <div class="modal-dialog " role="document ">
+    <div class="modal left fade" id="usrailroads" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document ">
             <div class="modal-content ">
 
-                <div class="modal-header ">
-                    <button type="button " class="close " data-dismiss="modal " aria-label="Close "><span
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal " aria-label="Close"><span
                                 aria-hidden="true ">&times;</span></button>
-                    <h4 class="modal-title " id="myModalLabel "><i class="fas fa-vector-square "></i></i>&nbsp;Display Railroads
+                    <h4 class="modal-title" id="myModalLabel"><i class="fas fa-vector-square"></i></i>&nbsp;Display Railroads
                     </h4>
                 </div>
 
-                <div class="modal-body ">
+                <div class="modal-body">
 
 
                     <div style="display: inline-flex; " id=" ">
-                        <input type="search " id="pickStateRail " placeholder="State " />
+                        <input type="search" id="pickStateRail" placeholder="State" />
                         <br />
-                        <button class="clickable " type="submit " id="searchStateRail "><i
-                                    class="fa fa-search "></i></button>
+                        <button class="clickable" type="submit" id="searchStateRail"><i
+                                    class="fa fa-search"></i></button>
 
                     </div>
 
-                    <select class="state-picker " id="stateSelectRail ">
+                    <select class="state-picker" id="stateSelectRail">
                         </select>
                     <div>
-                        <button class="clickable " type="submit " id="searchRail " style="width:40%; margin-top:5%; "><i
-                                class="fa fa-search "></i> submit</button>
-                        <button class="clickable " type="submit " id="clearRail " style="width:40% "><i
-                                class="fa fa-eraser "></i>Clear</button>
+                        <button class="clickable" type="submit" id="searchRail" style="width:40%; margin-top:5%;"><i
+                                class="fa fa-search"></i> submit</button>
+                        <button class="clickable" type="submit" id="clearRail" style="width:40%"><i
+                                class="fa fa-eraser"></i>Clear</button>
                     </div>
                     <div id='invalidState'></div>>
                 </div>
@@ -594,24 +594,24 @@
     <!-- Terry Modal -->
     <!-- Terry Modal -->
     <!-- <i class="fas fa-plane-arrival fa-rotate-90 "></i> -->
-    <div class="modal left fade " id="testModal " tabindex="-1 " role="dialog " aria-labelledby="myModalLabel ">
-        <div class="modal-dialog " role="document ">
+    <div class="modal left fade" id="testModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
 
-            <div class="modal-content ">
+            <div class="modal-content">
 
-                <div class="modal-header ">
-                    <button type="button " class="close " data-dismiss="modal " aria-label="Close "><span
-                                aria-hidden="true ">&times;</span></button>
-                    <h4 class="modal-title " id="myModalLabel "><i class="fas fa-plane fa-rotate-90 "></i>&nbsp;Airplane Crashes</h4>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fas fa-plane fa-rotate-90"></i>&nbsp;Airplane Crashes</h4>
                 </div>
 
-                <div class="modal-body ">
-                    <div class="row ">
-                        <div class="col-md-6 mb-3 ">
-                            <div class="ui-widget ">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="ui-widget">
                                 <label>Choose State:</label>
-                                <input type="string " id='stateInput' style="font-size: 12px; padding: 2px; margin:2px; width:200px " placeholder="State "><br>
-                                <select id="statesComboBox " style="font-size: 12px; padding: 2px; margin:2px; width:200px ">
+                                <input type="string" id='stateInput' style="font-size: 12px; padding: 2px; margin:2px; width:200px" placeholder="State"><br>
+                                <select id="statesComboBox" style="font-size: 12px; padding: 2px; margin:2px; width:200px">
                                         <option></option>
                                     </select>
                             </div>
@@ -626,13 +626,13 @@
         </div>
         <script>
             //Allows user to hit enter to search for json property
-            $("#stateInput ").keyup(function(event) {
+            $("#stateInput").keyup(function(event) {
                 // $("#statesComboBox ").click();
                 populateStatesCombo();
             });
 
             function populateStatesCombo() {
-                let filter = $("#stateInput ").val()
+                let filter = $("#stateInput").val()
 
                 $.get("http://localhost:8080/states?filter=" + filter, function(data) {
                     //console.log(data);
@@ -645,13 +645,13 @@
                         let name = data['results'][i].name;
                         html += '<option value=" ' + abbr + ' ">' + name + '</option>';
                     }
-                    $("#statesComboBox ").attr("size ", count);
+                    $("#statesComboBox").attr("size", count);
                     $('#statesComboBox').html(html);
                     //console.log(html);
 
                 });
             }
-            $("#statesComboBox ").click(function() {
+            $("#statesComboBox").click(function() {
 
             });
         </script>
@@ -659,30 +659,30 @@
     <!-- Location Modal -->
     <!-- Location Modal -->
     <!-- Location Modal -->
-    <div class="modal left fade " id="geolocationModal " tabindex="-1 " role="dialog " aria-labelledby="myModalLabel ">
-        <div class="modal-dialog " role="document ">
-            <div class="modal-content ">
+    <div class="modal left fade" id="geolocationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
 
-                <div class="modal-header ">
-                    <button type="button " class="close " data-dismiss="modal " aria-label="Close "><span
-                                aria-hidden="true ">&times;</span></button>
-                    <h4 class="modal-title " id="myModalLabel "><i class="fas fa-fw fa-map-marker-alt "></i>&nbsp;Location Tools</h4>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fas fa-fw fa-map-marker-alt"></i>&nbsp;Location Tools</h4>
                 </div>
 
-                <div class="modal-body ">
+                <div class="modal-body">
 
                     <hr>
                     <br />
 
                     <!-- enter lng/lat -->
-                    <div style="vertical-align:top; ">
-                        <p style="font-size: 12px "><i class="fas fa-map-marked-alt "></i> Enter Coordinates</p>
-                        <input type="number " id='lngInput' style="font-size: 11px; padding: 2px; margin:2px " placeholder="longitude "><br>
-                        <input type="number " id='latInput' style="font-size: 11px; padding: 2px; margin:2px " placeholder="latitude "><br>
+                    <div style="vertical-align:top;">
+                        <p style="font-size: 12px"><i class="fas fa-map-marked-alt "></i> Enter Coordinates</p>
+                        <input type="number" id='lngInput' style="font-size:11px; padding:2px; margin:2px " placeholder="longitude"><br>
+                        <input type="number" id='latInput' style="font-size:11px; padding:2px; margin:2px " placeholder="latitude"><br>
 
-                        <div style="padding-top:10px ">
-                            <input type="button " value="find " id="findLLButton " style="font-size: 10px; ">
-                            <input type="button " value="clear " id="findLLButtonClear " style="font-size: 10px; ">
+                        <div style="padding-top:10px">
+                            <input type="button" value="find" id="findLLButton" style="font-size: 10px;">
+                            <input type="button" value="clear" id="findLLButtonClear" style="font-size: 10px;">
                         </div>
                     </div>
 
@@ -691,16 +691,16 @@
                     <br />
 
                     <!-- lng/lat on map click -->
-                    <p style="font-size: 12px "><i class="fas fa-mouse-pointer "></i> Click on map to find lng/lat:
+                    <p style="font-size:12px"><i class="fas fa-mouse-pointer"></i> Click on map to find lng/lat:
                     </p>
-                    <pre id='info'><i class="fa fa-fw fa-globe "></i> lng/lat</pre>
+                    <pre id='info'><i class="fa fa-fw fa-globe"></i> lng/lat</pre>
 
                     <br />
                     <hr>
                     <br />
                     <!-- address geocode api-->
-                    <p style="font-size: 12px "><i class="fas fa-home "></i> Address Search:</p>
-                    <div id="addressAppend "></div>
+                    <p style="font-size:12px"><i class="fas fa-home"></i> Address Search:</p>
+                    <div id="addressAppend"></div>
 
                     <br />
                     <hr>
@@ -713,14 +713,14 @@
     <!--  nearest neighibours -->
     <!--  nearest neighibours -->
     <!--  nearest neighibours -->
-    <div class="modal left fade " id="nearestlocationModal " tabindex="-1 " role="dialog " aria-labelledby="myModalLabel ">
-        <div class="modal-dialog " role="document ">
-            <div class="modal-content ">
+    <div class="modal left fade" id="nearestlocationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
 
-                <div class="modal-header ">
-                    <button type="button " class="close " data-dismiss="modal " aria-label="Close "><span
-                            aria-hidden="true ">&times;</span></button>
-                    <h4 class="modal-title " id="myModalLabel "><i class="fas fa-fw fa-map-marker-alt "></i>&nbsp;Location Tools</h4>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fas fa-fw fa-map-marker-alt"></i>&nbsp;Location Tools</h4>
                 </div>
 
                 <div class="modal-body ">
@@ -728,15 +728,15 @@
                     <hr>
                     <br />
                     <!-- enter lng/lat -->
-                    <div style="vertical-align:top; ">
-                        <p style="font-size: 12px "><i class="fas fa-map-marked-alt "></i> Enter Coordinates to find nearest</p>
-                        <input type="number " id='lngInputs' style="font-size: 11px; padding: 2px; margin:2px " placeholder="longitude "><br>
-                        <input type="number " id='latInputs' style="font-size: 11px; padding: 2px; margin:2px " placeholder="latitude "><br>
-                        <input type="checkbox " id="addPolygon " name="addPolygon " value=" ">
-                        <label for="addPolygon "> check to add polygon</label><br>
-                        <div style="padding-top:10px ">
-                            <input type="button " value="find " id="findNearest " style="font-size: 10px; ">
-                            <input type="button " value="clear " id="findClearNearest " style="font-size: 10px; ">
+                    <div style="vertical-align:top;">
+                        <p style="font-size: 12px"><i class="fas fa-map-marked-alt"></i> Enter Coordinates to find nearest</p>
+                        <input type="number" id='lngInputs' style="font-size:11px; padding:2px; margin:2px" placeholder="longitude"><br>
+                        <input type="number" id='latInputs' style="font-size:11px; padding:2px; margin:2px" placeholder="latitude"><br>
+                        <input type="checkbox" id="addPolygon" name="addPolygon" value=" ">
+                        <label for="addPolygon"> check to add polygon</label><br>
+                        <div style="padding-top:10px">
+                            <input type="button" value="find" id="findNearest" style="font-size:10px;">
+                            <input type="button" value="clear" id="findClearNearest" style="font-size:10px;">
                         </div>
                     </div>
 
@@ -751,74 +751,74 @@
     <!-- Print Modal -->
     <!-- Print Modal -->
     <!-- Print Modal -->
-    <div id="map-print-modal " class="modal fade " role="dialog ">
-        <div class="modal-dialog ">
+    <div id="map-print-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
 
-            <div class="modal-content ">
-                <div class="modal-header ">
-                    <button type="button " class="close " data-dismiss="modal ">&times;</button>
-                    <h4 class="modal-title "><i class="fa fa-fw fa-print "></i>&nbsp;Print Map</h4>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fa fa-fw fa-print"></i>&nbsp;Print Map</h4>
                 </div>
 
-                <div class="modal-body ">
+                <div class="modal-body">
 
                     <!-- print form -->
-                    <form class="form-horizontal container-fluid " id="print-form ">
-                        <div class="row ">
+                    <form class="form-horizontal container-fluid" id="print-form">
+                        <div class="row">
 
                             <!-- title -->
-                            <div class="col ">
-                                <div class="form-group col-sm-12 ">
+                            <div class="col">
+                                <div class="form-group col-sm-12">
                                     <label>Map Title:</label>
-                                    <input id="export-title " name="export-title " type="text " style="font-size: smaller " placeholder="Title... " class="form-control input-md " maxlength="90 ">
+                                    <input id="export-title" name="export-title" type="text" style="font-size: smaller" placeholder="Title..." class="form-control input-md" maxlength="90">
                                 </div>
                             </div>
 
                             <!-- output format -->
-                            <div class="radio-groups format form-group col-sm-12 ">
+                            <div class="radio-groups format form-group col-sm-12">
 
                                 <div>
                                     <label>Format: </label>
-                                    <label class="radio-inline " for="output-format-0 ">
-                                            <input type="radio " name="output-format " id="output-format-0 " value="png ">
+                                    <label class="radio-inline" for="output-format-0">
+                                            <input type="radio" name="output-format" id="output-format-0 " value="png">
                                             PNG
                                         </label>
-                                    <label class="radio-inline " for="output-format-1 ">
-                                            <input type="radio " name="output-format " id="output-format-1 " value="pdf "
-                                                checked="checked ">
+                                    <label class="radio-inline" for="output-format-1">
+                                            <input type="radio" name="output-format" id="output-format-1" value="pdf"
+                                                checked="checked">
                                             PDF
                                         </label>
 
                                 </div>
                             </div>
                             <!-- format/dimensions -->
-                            <div class="radio-groups size form-group col-sm-12 ">
+                            <div class="radio-groups size form-group col-sm-12">
 
                                 <div>
                                     <label>Dimensions: </label>
-                                    <label class="radio-inline " for="dimensions-0 ">
-                                            <input type="radio " name="dimensions " id="dimensions-0 " value="default "
-                                                checked="checked ">
+                                    <label class="radio-inline" for="dimensions-0">
+                                            <input type="radio" name="dimensions" id="dimensions-0" value="default"
+                                                checked="checked">
                                             8.5 x 11
                                         </label>
-                                    <label class="radio-inline " for="dimensions-1 ">
-                                            <input type="radio " name="dimensions " id="dimensions-1 " value="large ">
+                                    <label class="radio-inline" for="dimensions-1">
+                                            <input type="radio" name="dimensions" id="dimensions-1" value="large">
                                             11 x 17 (legend)
                                         </label>
                                 </div>
                             </div>
 
                             <div>
-                                <button type="button " id="export-map " class="button button " data-dismiss="modal "><i
-                                            class="fa fa-fw fa-print "></i> Create Map</button>
-                                <div style="padding-top: 13px; font-size:xx-small; margin:0 "><i style="color:#dc4f4f " class="fa fa-fw fa-exclamation-circle "></i> This may take a few seconds...</div>
+                                <button type="button" id="export-map" class="button button " data-dismiss="modal"><i
+                                            class="fa fa-fw fa-print"></i> Create Map</button>
+                                <div style="padding-top:13px; font-size:xx-small; margin:0"><i style="color:#dc4f4f" class="fa fa-fw fa-exclamation-circle"></i> This may take a few seconds...</div>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <div class="modal-footer ">
-                    <button type="button " class="btn btn-default " data-dismiss="modal ">Close</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
 
@@ -830,21 +830,21 @@
     <!-- Disclaimer Modal -->
     <!-- Disclaimer Modal -->
     <!-- Disclaimer Modal -->
-    <div id="disclaimerModal " class="modal " role="dialog ">
-        <div class="modal-dialog ">
+    <div id="disclaimerModal" class="modal" role="dialog">
+        <div class="modal-dialog">
 
-            <div class="modal-content ">
-                <div class="modal-header ">
-                    <button type="button " class="close " data-dismiss="modal ">&times;</button>
-                    <h4 class="modal-title "><i class="fa fa-fw fa-gavel "></i>&nbsp;Disclaimer</h4>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fa fa-fw fa-gavel"></i>&nbsp;Disclaimer</h4>
                 </div>
-                <div class="modal-body ">
+                <div class="modal-body">
                     <p>
                         A place to put your disclaimer... Surely everyone will read it.
                     </p>
                 </div>
-                <div class="modal-footer ">
-                    <button type="button " class="btn btn-default " data-dismiss="modal ">Close</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
