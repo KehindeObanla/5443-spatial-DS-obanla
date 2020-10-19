@@ -235,7 +235,7 @@ function addpolygonlayer(json) {
         'type': 'fill',
         'source': 'poly',
         'paint': {
-            'fill-color': '#020000',
+            'fill-color': '#000200',
             'fill-opacity': 0.4
         },
         'filter': ['==', '$type', 'Polygon']
@@ -336,7 +336,7 @@ function addLayer(lng, lat, lng1, lat1) {
             'line-cap': 'round'
         },
         'paint': {
-            'line-color': '#FF0000',
+            'line-color': '#00102',
             'line-width': 2
         }
     });
@@ -450,7 +450,7 @@ function addLayer1(json) {
             'line-cap': 'round'
         },
         'paint': {
-            'line-color': '#FF0000',
+            'line-color': '#020200',
             'line-width': 1
         }
     });
