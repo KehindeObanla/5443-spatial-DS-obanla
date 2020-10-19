@@ -83,7 +83,8 @@ button:focus {
     font-size: 12px;
 }
 
-#invalidState {
+#invalidState,
+#invalidGeojson {
     height: 50px;
     width: 100%;
     background-color: #e8e8e8;
@@ -231,7 +232,8 @@ button:focus {
     -webkit-appearance: none;
 }
 
-#clearCity {
+#clearCity,
+#clearpasted {
     min-height: 40px;
     width: 50px;
     color: #fbfbfb;

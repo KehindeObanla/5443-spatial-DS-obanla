@@ -161,6 +161,7 @@ map.on('load', function() {
 //enter Lat Long for nearest neghibour
 //enter Lat Long for nearest neghibour
 //enter Lat Long for nearest neghibour
+
 map.on('load', function() {
 
     $(document).ready(function() {
@@ -169,13 +170,7 @@ map.on('load', function() {
         //clear
         $('#findClearNearest').click(function() {
 
-            map.removeLayer("points");
-            map.removeSource("point");
 
-            if (map.getLayer("points")) {
-                map.removeLayer("points");
-                map.removeSource("point");
-            }
             $("#lngInputs").val('')
             $("#latInputs").val('')
         });
@@ -198,7 +193,7 @@ map.on('load', function() {
                             // poly
                     });
                     map.addLayer({
-                        'id': 'points',
+                        'id': 'point',
                         'source': 'point',
                         'type': 'circle',
                         'paint': {
@@ -230,15 +225,15 @@ function addPolygon(feature) {
 
 function addpolygonlayer(json) {
     console.log("entered");
-    map.addSource('national-park', {
+    map.addSource('poly', {
         'type': 'geojson',
         'data': json
             // poly
     });
     map.addLayer({
-        'id': 'park-boundary',
+        'id': 'poly',
         'type': 'fill',
-        'source': 'national-park',
+        'source': 'poly',
         'paint': {
             'fill-color': '#020000',
             'fill-opacity': 0.4
@@ -261,13 +256,7 @@ $("#clearCity").click(function(event) {
     lineAnswers = document.getElementById('calculated-length2');
     lineAnswers.innerHTML = '<p>'
     '</p>';
-    map.removeLayer("route");
-    map.removeSource("route");
 
-    if (map.getLayer("route")) {
-        map.removeLayer("route");
-        map.removeSource("route");
-    }
 });
 
 $("#searchACity").click(function(event) {
@@ -400,12 +389,12 @@ $("#clearRail").click(function(event) {
 
     var text = "database does not contain railroad data for selected state"
     if ($('#invalidState').text() != text) {
-        map.removeLayer("rout");
-        map.removeSource("rout");
+        map.removeLayer("Rail");
+        map.removeSource("Rail");
 
-        if (map.getLayer("rout")) {
-            map.removeLayer("rout");
-            map.removeSource("rout");
+        if (map.getLayer("Rail")) {
+            map.removeLayer("Rail");
+            map.removeSource("Rail");
         }
     }
     getline = document.getElementById('invalidState');
@@ -446,16 +435,16 @@ function addLayer1(json) {
     var latlng = json['geometry']['coordinates'][0];
     var enterLng = latlng[0];
     var enterLat = latlng[1];
-    map.addSource('rout', {
+    map.addSource('Rail', {
         'type': 'geojson',
         'data': json
 
     });
 
     map.addLayer({
-        'id': 'rout',
+        'id': 'Rail',
         'type': 'line',
-        'source': 'rout',
+        'source': 'Rail',
         'layout': {
             'line-join': 'round',
             'line-cap': 'round'
@@ -494,11 +483,118 @@ function populateStatesSelect() {
 /* uplaod or paste geojson */
 /* uplaod or paste geojson */
 /* uplaod or paste geojson */
-if ($.trim($("#TexrareaGeo").val())) {
-    let data = $("#TexrareaGeo").val();
+
+/* add layerfor pasted geojson */
+/* add layerfor pasted geojson */
+/* add layerfor pasted geojson */
+function AddpastedGeojsonlayer(json) {
+    console.log(json);
+    // var latlng = json['geometry']['coordinates'][0];
+    // var enterLng = latlng[0];
+    // var enterLat = latlng[1];
+    map.addSource('pastedgeo', {
+        'type': 'geojson',
+        'data': json
+    });
+
+    map.addLayer({
+        'id': 'pastedgeo',
+        'type': 'line',
+        'source': 'pastedgeo',
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': '#FF0000',
+            'line-width': 1
+        }
+    });
+    // map.flyTo({
+    //     center: [enterLng, enterLat],
+    //     zoom: 4
+    // });
 }
+//onclick call addeojsonlayer
+$("#loadmap").click(function(event) {
+    if ($.trim($("#TexrareaGeo").val())) {
+        let data = $("#TexrareaGeo").val();
+        err = "invalid geojson object"
+        if (AddpastedGeojsonlayer(data) == err) {
+            getline = document.getElementById('invalidGeojson');
+            getline.style.display = "block"
+            getline.innerHTML = '<p>' + 'invalid geojson' + '</p>';
 
+        } else {
+            AddpastedGeojsonlayer(data);
+        }
+    }
+});
+//clear pasted layer
+$("#clearpasted").click(function(event) {
+    $("#TexrareaGeo").val("");
 
+    lineAnswers = document.getElementById('invalidGeojson');
+    lineAnswers.innerHTML = '<p>'
+    '</p>';
+    map.removeLayer("pastedgeo");
+    map.removeSource("pastedgeo");
+
+    if (map.getLayer("pastedgeo")) {
+        map.removeLayer("pastedgeo");
+        map.removeSource("pastedgeo");
+    }
+});
+// delete layers
+$("#deleteLayers").click(function(event) {
+    if (document.getElementById("points").checked == true) {
+        getline = document.getElementById('points');
+        var layer = getline.value
+        removelayer(layer)
+
+    }
+    if (document.getElementById("route").checked == true) {
+        getline = document.getElementById('route');
+        var layer = getline.value
+        removelayer(layer)
+
+    }
+    if (document.getElementById("MAP").checked == true) {
+        getline = document.getElementById('MAP');
+        var layer = getline.value
+        removelayer(layer)
+
+    }
+    if (document.getElementById("poly").checked == true) {
+        getline = document.getElementById('poly');
+        var layer = getline.value
+        removelayer(layer)
+
+    }
+    if (document.getElementById("pastedGeo").checked == true) {
+        getline = document.getElementById('pastedGeo');
+        var layer = getline.value
+        removelayer(layer)
+
+    }
+    if (document.getElementById("Rail").checked == true) {
+        getline = document.getElementById('Rail');
+        var layer = getline.value
+        removelayer(layer)
+
+    }
+
+});
+
+function removelayer(layer) {
+    map.removeLayer(layer);
+    map.removeSource(layer);
+
+    if (map.getLayer(layer)) {
+        map.removeLayer(layer);
+        map.removeSource(layer);
+    }
+}
 
 
 
