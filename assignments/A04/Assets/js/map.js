@@ -162,67 +162,57 @@ map.on('load', function() {
 //enter Lat Long for nearest neghibour
 //enter Lat Long for nearest neghibour
 
-map.on('load', function() {
+//clear nearest neghibour lat lng
+$('#findClearNearest').click(function() {
+    $("#lngInputs").val('')
+    $("#latInputs").val('')
+});
+// find nearest and load layer
+$('#findNearest').click(function() {
 
-    $(document).ready(function() {
+    var enterLng = $("#lngInputs").val()
+    var enterLat = $("#latInputs").val()
 
+    var enterLL = turf.point([enterLng, enterLat]);
 
-        //clear
-        $('#findClearNearest').click(function() {
+    $.getJSON("http://localhost:8080/click/?lngLat=" + enterLng + "," + enterLat)
+        .done(function(json) {
+            console.log(json)
 
-
-            $("#lngInputs").val('')
-            $("#latInputs").val('')
-        });
-
-        //create
-        $('#findNearest').click(function() {
-
-            var enterLng = $("#lngInputs").val()
-            var enterLat = $("#latInputs").val()
-
-            var enterLL = turf.point([enterLng, enterLat]);
-
-            $.getJSON("http://localhost:8080/click/?lngLat=" + enterLng + "," + enterLat)
-                .done(function(json) {
-                    console.log(json)
-
-                    map.addSource('point', {
-                        'type': 'geojson',
-                        'data': json
-                            // poly
-                    });
-                    map.addLayer({
-                        'id': 'point',
-                        'source': 'point',
-                        'type': 'circle',
-                        'paint': {
-                            'circle-radius': 6,
-                            'circle-color': '#B42222'
-                        }
-                    });
-
-
-                    addpolygonlayer(addPolygon(json));
-                })
-
-            map.flyTo({
-                center: [enterLng, enterLat]
+            map.addSource('point', {
+                'type': 'geojson',
+                'data': json
+                    // poly
+            });
+            map.addLayer({
+                'id': 'point',
+                'source': 'point',
+                'type': 'circle',
+                'paint': {
+                    'circle-radius': 6,
+                    'circle-color': '#B42222'
+                }
             });
 
-        });
+            if (document.getElementById("addPolygon").checked == true) {
+                addpolygonlayer(addPolygon(json))
+
+            };
+        })
+
+    map.flyTo({
+        center: [enterLng, enterLat]
     });
+
 });
+
+
 // function to add polygon to nearest points
 function addPolygon(feature) {
-    if (document.getElementById("addPolygon").checked == true) {
-        var enveloped = turf.envelope(feature);
-        return enveloped;
-
-    }
-
+    var enveloped = turf.envelope(feature);
+    return enveloped;
 }
-
+// adds a layer for a polygon
 function addpolygonlayer(json) {
     console.log("entered");
     map.addSource('poly', {
@@ -245,9 +235,11 @@ function addpolygonlayer(json) {
 // draw line between two points and calc distance
 // draw line between two points and calc distance
 // draw line between two points and calc distance
+
+// hides drop down menu for city A and B
 $('#CitySelectA').hide();
 $('#CitySelectB').hide();
-
+// clear texbox for selected state A And B
 $("#clearCity").click(function(event) {
     $("#PickCityA").val("");
     $('#CitySelectA').html("");
@@ -258,25 +250,30 @@ $("#clearCity").click(function(event) {
     '</p>';
 
 });
-
+// populates drop down menu for City A when search is clicked
 $("#searchACity").click(function(event) {
     populateCitySelectA()
 });
-
+// populates drop down menu for City B when search is clicked
 $("#searchBCity").click(function(event) {
     populateCitySelectB()
 });
+// when a drop down is clicked it populates the textbox with clicked value
+// and hides the drop down for city A
 $("#CitySelectA").click(function(event) {
     let city = $("#CitySelectA option:selected").text();
     $("#PickCityA").val(city);
     $('#CitySelectA').hide();
 });
+// when a drop down is clicked it populates the textbox with clicked value
+// and hides the drop down for city B
 $("#CitySelectB").click(function(event) {
     let city = $("#CitySelectB option:selected").text();
     $("#PickCityB").val(city);
     $('#CitySelectB').hide();
 });
-
+// check for the radio button that is clicked
+//and return a clicked value
 function RadioValue() {
     var ele = document.getElementsByName('units');
 
@@ -288,6 +285,10 @@ function RadioValue() {
 
     }
 }
+// on click of the submit button get the value in the
+// two textboxes add a comma and the value in the radio
+//button and send to flask and display length
+//and add layer
 $("#searchCity").click(function(event) {
     var ele = RadioValue();
     let CityA = $("#CitySelectA").val();
@@ -309,7 +310,8 @@ $("#searchCity").click(function(event) {
         });
 
 });
-
+// given the long lat of both cities add a 
+//layer
 function addLayer(lng, lat, lng1, lat1) {
 
     map.addSource('route', {
@@ -341,13 +343,14 @@ function addLayer(lng, lat, lng1, lat1) {
         }
     });
 }
-
+// read value in textbox to filter populate city A
 $("#PickCityA").keyup(function(event) {
     populateCitySelectA();
 });
 
 
-// populate citiy A
+// take the value in text box send to flask
+//and display the list of cities eturned by flask
 function populateCitySelectA() {
     let filter = $("#PickCityA").val();
     let html = '';
@@ -362,10 +365,12 @@ function populateCitySelectA() {
 
     });
 }
+// read value in textbox to filter populate cityB
 $("#PickCityB").keyup(function(event) {
     populateCitySelectB();
 });
-// populate citiy B
+// take the value in text box send to flask
+//and display the list of cities eturned by flask
 function populateCitySelectB() {
     let filter = $("#PickCityB").val();
 
@@ -382,36 +387,32 @@ function populateCitySelectB() {
     });
 }
 //load city for railroads
+
+
+//hide railroad dropdown
 $('#stateSelectRail').hide();
+//clear values in text box
 $("#clearRail").click(function(event) {
     $("#pickStateRail").val("");
     $('#stateSelectRail').html("");
-
-    var text = "database does not contain railroad data for selected state"
-    if ($('#invalidState').text() != text) {
-        map.removeLayer("Rail");
-        map.removeSource("Rail");
-
-        if (map.getLayer("Rail")) {
-            map.removeLayer("Rail");
-            map.removeSource("Rail");
-        }
-    }
     getline = document.getElementById('invalidState');
     getline.innerHTML = '<p>'
     '</p>';
     getline.style.display = "none"
-
-
 });
+//populate states with railroad on click
 $("#searchStateRail").click(function(event) {
     populateStatesSelect()
 });
+//on click of the drop down add the drop down value
+//to the textbox and hide dropdown
 $("#stateSelectRail").click(function(event) {
     let state = $("#stateSelectRail option:selected").text();
     $("#pickStateRail").val(state);
     $('#stateSelectRail').hide();
 });
+//search flask with the given state 
+//add layer
 $("#searchRail").click(function(event) {
 
     let state = $("#stateSelectRail").val();
@@ -430,7 +431,8 @@ $("#searchRail").click(function(event) {
         });
 
 });
-
+//create layer for rail road given the 
+//geojson
 function addLayer1(json) {
     var latlng = json['geometry']['coordinates'][0];
     var enterLng = latlng[0];
@@ -459,11 +461,12 @@ function addLayer1(json) {
         zoom: 4
     });
 }
-
+//read user input and populate states with
+//dropdown with the user input
 $("#pickStateRail").keyup(function(event) {
     populateStatesSelect();
 });
-
+//populate state 
 function populateStatesSelect() {
     let filter = $("#pickStateRail").val();
 
@@ -530,22 +533,12 @@ $("#loadmap").click(function(event) {
         }
     }
 });
-//clear pasted layer
+//clear textbox
 $("#clearpasted").click(function(event) {
     $("#TexrareaGeo").val("");
 
-    lineAnswers = document.getElementById('invalidGeojson');
-    lineAnswers.innerHTML = '<p>'
-    '</p>';
-    map.removeLayer("pastedgeo");
-    map.removeSource("pastedgeo");
-
-    if (map.getLayer("pastedgeo")) {
-        map.removeLayer("pastedgeo");
-        map.removeSource("pastedgeo");
-    }
 });
-// delete layers
+// delete checked layers
 $("#deleteLayers").click(function(event) {
     if (document.getElementById("points").checked == true) {
         getline = document.getElementById('points');
@@ -578,14 +571,18 @@ $("#deleteLayers").click(function(event) {
 
     }
     if (document.getElementById("Rail").checked == true) {
-        getline = document.getElementById('Rail');
-        var layer = getline.value
-        removelayer(layer)
+        var text = "database does not contain railroad data for selected state"
+        if ($('#invalidState').text() != text) {
+            getline = document.getElementById('Rail');
+            var layer = getline.value
+            removelayer(layer)
+        }
+
 
     }
 
 });
-
+//to remove layers
 function removelayer(layer) {
     map.removeLayer(layer);
     map.removeSource(layer);
