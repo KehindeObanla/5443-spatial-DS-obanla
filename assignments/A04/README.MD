@@ -30,6 +30,7 @@
 |   #   | Folder Link | Description |
 | :---: | ----------- | ---------------------- |
 |1      |[javaScript](https://github.com/KehindeObanla/5443-spatial-DS-obanla/blob/master/assignments/A04/Assets/js/map.js)|Contains the javaScript that will be loded by index.html|
-|2      |[Json](https://github.com/KehindeObanla/5443-spatial-DS-obanla/tree/master/assignments/A04/Assets/json)|contains all data files used in the program|
+|2      |[Json](https://github.com/KehindeObanla/5443-spatial-DS-obanla/tree/master/assignments/A04/Assets/json)|this folder contains all data files used in the program|
 |3      |[Flask Api](https://github.com/KehindeObanla/5443-spatial-DS-obanla/blob/master/assignments/A04/Assets/Api/flask_api.py)|this folder contains the flask Api |
-|4      |[index.html](https://github.com/KehindeObanla/5443-spatial-DS-obanla/blob/master/assignments/A04/index.html)|this contains the html file to load the map|
+|4      |[index.html](https://github.com/KehindeObanla/5443-spatial-DS-obanla/blob/master/assignments/A04/index.html)|this contains the html file that  loads the map|
+|5      |[css for map](https://github.com/KehindeObanla/5443-spatial-DS-obanla/tree/master/assignments/A04/Assets/css)|this contains the style for index.html|
