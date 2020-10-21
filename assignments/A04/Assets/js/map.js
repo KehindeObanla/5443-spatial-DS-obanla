@@ -152,6 +152,7 @@ $('#findNearest').click(function() {
     var generate = 'near'
     var random = makeid(6);
     generate = generate + random;
+    deleteLayer.push(generate)
     $.getJSON("http://localhost:8080/nearestNeighbors/?lngLat=" + enterLng + "," + enterLat)
         .done(function(json) {
 
@@ -195,7 +196,6 @@ function addpolygonlayer(json) {
     var generate = 'MAP'
     var random = makeid(6);
     generate = generate + random;
-
     deleteLayer.push(generate)
     map.addSource(generate, {
         'type': 'geojson',
@@ -633,6 +633,7 @@ $("#clearpasted").click(function(event) {
 
 });
 
+
 function getSelectedCheckboxValues(boxs) {
     const checkboxes = document.querySelectorAll(`input[name="${boxs}"]:checked`);
 
@@ -649,30 +650,30 @@ const btn = document.querySelector('#buttondelete');
 btn.addEventListener('click', (event) => {
     var list = [];
     list = getSelectedCheckboxValues('boxs')
-
-    list.forEach(removelayer);
+    list.forEach(removelayers);
+    console.log(list);
 
 });
 
-function esting(list) {
-    for (i = 0; i < list.length; i++) {
-        removelayer(list[i]);
-    }
 
-}
 
 //to remove layers
-function removelayer(layer) {
-
+function removelayers(layer) {
+    console.log("entered");
+    console.log(layer);
+    console.log(deleteLayer);
+    console.log(deleteLayer.length);
     var afterdellete = []
     for (i = 0; i < deleteLayer.length; i++) {
         var contain = deleteLayer[i];
+        console.log(contain);
         if (contain.includes(layer)) {
             afterdellete.push(contain);
             map.removeLayer(contain);
             map.removeSource(contain);
         }
     }
+    console.log(deleteLayer);
     for (i = 0; i < afterdellete.length; i++) {
         if (deleteLayer.includes(afterdellete[i])) {
             const index = deleteLayer.indexOf(afterdellete[i]);
