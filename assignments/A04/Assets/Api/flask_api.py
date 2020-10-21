@@ -113,7 +113,7 @@ def load_data(path):
                     return list(data)
     return None
 
-
+""" validates a json """
 def validateJSON(jsonData):
     try:
         json.loads(jsonData)
@@ -121,19 +121,13 @@ def validateJSON(jsonData):
         return False
     return True
 
-
+""" creates bounding box """
 def point_to_bbox(lng, lat, offset=.001):
     #(left, bottom, right, top)
 
     return (float(lng-offset), float(lat-offset), float(lng+offset), float(lat+offset))
 
-
-def move_point(p, distance, feet=False):
-    p[1] += float(distance) / 111111.0
-    p[0] += float(distance) / (111111.0*(math.cos(10)))
-    return p
-
-
+""" loads rtee """
 def build_index():
     #(left, bottom, right, top)
 
@@ -178,7 +172,7 @@ def build_index():
 
  # returns a list of nearest neigh
 
-
+""" finds nearest neghibours given a lng lat """
 def nearestNeighbors(lng, lat):
     answer_Collection = {
         "type": "FeatureCollection",
@@ -244,7 +238,8 @@ def intersection(left,bottom,right,top):
     # the result is a JSON string:
     # to be used as id in the frontend
     return convertedGeojson
-""" creates a featurecollectiondepending of the  feature type """
+
+""" creates a featurecollection depending of the  feature type """
 def createfeatureCollection(lists,FeatureType):
     answer_Collection = {
         "type": "FeatureCollection",
@@ -392,12 +387,12 @@ def get_direction():
     return handle_response([{"bearing": b}], {'lat1': lat1, 'lng1': lng1, 'lat2': lat2, 'lng2': lng2})
 
 
-@app.route('/click/')
+@app.route('/nearestNeighbors/')
 def click():
     """ Description: return a list of US nearest negihbours
         Params: 
             None
-        Example:http://localhost:8080/click/?lngLat="
+        Example:http://localhost:8080/nearestNeighbors/?lngLat="
     """
     lng, lat = request.args.get("lngLat", None).split(",")
     return nearestNeighbors(float(lng), float(lat))

@@ -152,9 +152,9 @@ $('#findNearest').click(function() {
     var generate = 'near'
     var random = makeid(6);
     generate = generate + random;
-    $.getJSON("http://localhost:8080/click/?lngLat=" + enterLng + "," + enterLat)
+    $.getJSON("http://localhost:8080/nearestNeighbors/?lngLat=" + enterLng + "," + enterLat)
         .done(function(json) {
-            console.log(json)
+
 
             map.addSource(generate, {
                 'type': 'geojson',
@@ -195,7 +195,7 @@ function addpolygonlayer(json) {
     var generate = 'MAP'
     var random = makeid(6);
     generate = generate + random;
-    console.log(json);
+
     deleteLayer.push(generate)
     map.addSource(generate, {
         'type': 'geojson',
@@ -276,8 +276,7 @@ $("#searchCity").click(function(event) {
     let CityA = $("#CitySelectA").val();
     let CityB = $("#CitySelectB").val();
     var message = 'fill out both cities'
-    console.log(CityA);
-    console.log(CityB);
+
     if (CityA == null || CityB == null || CityA == "" || CityB == "") {
         alert("Please Fill All Required Field");
     } else {
@@ -290,7 +289,7 @@ $("#searchCity").click(function(event) {
         var lat1 = parseFloat(splited2[1]);
         $.get("http://localhost:8080/distance/?lnglat=" + res)
             .done(function(data) {
-                console.log(data)
+
                 addLayer(lng, lat, lng1, lat1)
                 lineAnswers = document.getElementById('calculated-length2');
                 lineAnswers.innerHTML = '<p>' + data + '</p>';
@@ -517,11 +516,11 @@ function convert(str) {
     lisy = [];
 
     res = str.split(/(\[.*?\])/).filter(Boolean);
-    console.log(res);
+
     for (i = 0; i < res.length; i++) {
         var thing = res[i].trim();
         if (thing != ',') {
-            console.log(res[2]);
+
             if (/\S/.test(thing)) {
                 list.push(thing);
 
@@ -540,7 +539,7 @@ $("#loadmap").click(function(event) {
     var Coordinate = $("#TexrareaGeo").val();
     var featureValue = $("#featureType").val();
     var checked = featureValue.toLowerCase();
-    console.log(Coordinate);
+
     if (Coordinate == null || featureValue == null || Coordinate == "" || featureValue == "") {
         alert("Please Fill All Required Field");
     } else {
@@ -549,12 +548,12 @@ $("#loadmap").click(function(event) {
                 //call back end
             $.get("http://localhost:8080/CreateFeature/?value=" + JSON.stringify(answer) + ";" + featureValue)
                 .done(function(data) {
-                    console.log(data)
+
                     if (checked == "polygon") {
-                        console.log("for poly");
+
                         createpastedLayerPolygon(data)
                     } else {
-                        console.log("for point");
+
                         createpastedLayerPoints(data)
                     }
 
@@ -575,12 +574,10 @@ $("#loadmap").click(function(event) {
 /* add layerfor pasted geojson for points */
 /* add layerfor pasted geojson for points */
 function createpastedLayerPoints(json) {
-    console.log("entered")
     var generate = 'Geo'
     var random = makeid(6);
     generate = generate + random;
     deleteLayer.push(generate);
-    console.log(generate);
     map.addSource(generate, {
         'type': 'geojson',
         'data': json
@@ -603,11 +600,9 @@ function createpastedLayerPoints(json) {
 /* add layerfor pasted geojson for polygon*/
 /* add layerfor pasted geojson for polygon*/
 function createpastedLayerPolygon(json) {
-    console.log("entered")
     var generate = 'Geo'
     var random = makeid(6);
     generate = generate + random;
-    console.log(generate);
     deleteLayer.push(generate);
     map.addSource(generate, {
         'type': 'geojson',
@@ -643,7 +638,7 @@ function getSelectedCheckboxValues(boxs) {
 
     let values = [];
     checkboxes.forEach((checkbox) => {
-        console.log(checkbox);
+
         values.push(checkbox.value);
     });
 
@@ -672,7 +667,6 @@ function removelayer(layer) {
     var afterdellete = []
     for (i = 0; i < deleteLayer.length; i++) {
         var contain = deleteLayer[i];
-        console.log(contain);
         if (contain.includes(layer)) {
             afterdellete.push(contain);
             map.removeLayer(contain);
@@ -680,7 +674,6 @@ function removelayer(layer) {
         }
     }
     for (i = 0; i < afterdellete.length; i++) {
-        console.log("tried to delete");
         if (deleteLayer.includes(afterdellete[i])) {
             const index = deleteLayer.indexOf(afterdellete[i]);
             deleteLayer.splice(index, 1)
@@ -705,7 +698,6 @@ function updateArea(e) {
     var data = drawmodal.getAll();
 
     var coords = turf.meta.coordAll(data);
-    console.log(coords);
     var line = turf.lineString(coords);
     var bbox = turf.bbox(line);
     var generate = 'DrawL'
@@ -715,7 +707,6 @@ function updateArea(e) {
 
     $.getJSON("http://localhost:8080/interSection/?lngLat=" + bbox)
         .done(function(json) {
-            console.log(json)
             map.addSource(generate, {
                 'type': 'geojson',
                 'data': json
@@ -755,7 +746,6 @@ map.on(touchEvent, function(e) {
         }
 
     };
-    console.log(json)
     document.getElementById('info').innerHTML =
         JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
         // create json to store
