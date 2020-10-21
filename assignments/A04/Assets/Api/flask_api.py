@@ -189,6 +189,8 @@ def nearestNeighbors(lng, lat):
     left, bottom, right, top = point_to_bbox(lng, lat)
     nearest = list(idx.nearest((left, bottom, right, top), 5))
     print(nearest)
+    nearest = list(dict.fromkeys(nearest)) 
+    print(nearest)  
     nearestlist = []
     # for each id get all other properties from
     # rtee and add it to a list
@@ -209,8 +211,39 @@ def nearestNeighbors(lng, lat):
     # to be used as id in the frontend
     return convertedGeojson
 
+def intersection(left,bottom,right,top):
+    left = round(float(left),4)
+    bottom = round(float(bottom),4)
+    right = round(float(right),4)
+    top = round(float(top),4)
+    answer_Collection = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    idx, rtreeid = build_index()
+    intersect = list(idx.intersection((left, bottom, right,top),objects=True))
+    
+    intersectid =[]
+    for ids in intersect:
+        intersectid.append(ids.id)
+    intersectid = list(dict.fromkeys(intersectid))    
+    
+    nearestlist = []
+    for item in intersectid:
+        nearestlist.append({
+            'type': 'Feature',
+            'geometry': rtreeid[item]['geometry'],
+            'properties': rtreeid[item]['properties']
+        })
+    # add nearestlist to a dictionary
+    # to make it a geojson file
+    answer_Collection['features'] = nearestlist
+    # convert into JSON:
+    convertedGeojson = json.dumps(answer_Collection)
+    # the result is a JSON string:
+    # to be used as id in the frontend
+    return convertedGeojson
 
-    # nearest neghibour on click
 """
   ____    _  _____  _      ____    _    ____ _  _______ _   _ ____
  |  _ \  / \|_   _|/ \    | __ )  / \  / ___| |/ / ____| \ | |  _ \
@@ -441,9 +474,19 @@ def railroad():
         return answer_Collection
         
     return handle_response(answer_Collection) 
-   
-   
-
-
+@app.route('/interSection/')
+def inter():
+    """ Description: return a list of US nearest negihbours
+        Params: 
+            None
+        Example:http://localhost:8080/interSection/?lngLat="
+    """
+    coord= request.args.get("lngLat", None).split(",")
+    left = coord[0]
+    bottom = coord[1]
+    right = coord[2]
+    top = coord[3]
+     
+    return intersection(left, bottom, right, top)  
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

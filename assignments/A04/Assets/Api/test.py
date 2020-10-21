@@ -317,8 +317,57 @@ def nearestNeighbors(lng, lat):
     print( convertedGeojson)
     # the result is a JSON string:
     # to be used as id in the frontend
+def intersection(left,bottom,right,top):
+  
+    print(type( left))
+   
+    answer_Collection = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    idx, rtreeid = build_index()
+    intersect = list(idx.intersection((left, bottom, right, top),objects=True))
+    intersectid =[]
+    for ids in intersect:
+        intersectid.append(ids.id)
+    intersectid = list(dict.fromkeys(intersectid))    
+    
+    nearestlist = []
+    for item in intersectid:
+        dic = rtreeid[item]['geometry']
+        for key,value in dic.items():
+            if key =='coordinates':
+                lng = value[0]
+                lat = value[1]
+                flag = inboundingBox(bottom,left,top,right,lng,lat)
+                if flag ==True:
+                    nearestlist.append({
+                    'type': 'Feature',
+                    'geometry': rtreeid[item]['geometry'],
+                    'properties': rtreeid[item]['properties']
+                    })
+      
+    # add nearestlist to a dictionary
+    # to make it a geojson file
+    answer_Collection['features'] = nearestlist
+    # convert into JSON:
+    convertedGeojson = json.dumps(answer_Collection)
+    # the result is a JSON string:
+    # to be used as id in the frontend
+    return convertedGeojson
+def inboundingBox(x1, y1, x2,y2, x, y) : 
+    if (x > x1 and x < x2 and y > y1 and y < y2) : 
+        return True
+    else : 
+        return False
    
 
 
+    
+
+
+
 if __name__ == '__main__':
-  nearestNeighbors(-121.353637, 40.584978)
+
+    s = intersection(-121.45766500748957,34.90075728162189,-117.48191269134628,38.18786097194996)
+    print (s)

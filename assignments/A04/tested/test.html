@@ -56,9 +56,9 @@
         mapboxgl.accessToken = 'pk.eyJ1Ijoia2VoaW5kZW9iYW5sYSIsImEiOiJja2ZnN3RuZnYwMWtwMnhuMXBiYWtwenU4In0.T2tsUj_6lRzfkvYMJccJnw';
         var map = new mapboxgl.Map({
             container: 'map', // container id
-            style: 'mapbox://styles/mapbox/satellite-v9', //hosted style id
+            style: 'mapbox://styles/mapbox/light-v9', //hosted style id
             center: [-91.874, 42.76], // starting position
-            zoom: 12 // starting zoom
+            zoom: 7 // starting zoom
         });
 
         var draw = new MapboxDraw({
@@ -76,13 +76,22 @@
 
         function updateArea(e) {
             var data = draw.getAll();
-            var poly = turf.geojsonType(data, 'Polygon', );
-            console.log(poly);
+            var coords = turf.meta.coordAll(data);
+            console.log(data);
+            console.log(coords);
+            CORD = []
+            CORD[0] = coords[0];
+            CORD[1] = coords[1];
+            CORD[2] = coords[2];
+            CORD[3] = coords[3];
+            var line = turf.lineString(CORD);
+            var bbox = turf.bbox(line);
+            console.log(CORD);
+            console.log(bbox);
 
+
+            //console.log(turf.meta.coordAll(bbox))
             if (data.features.length > 0) {
-                console.log(data);
-                var test = turf.getCoords(data);
-                console.log(data);
                 var area = turf.area(data);
                 // restrict to area to 2 decimal points
                 var rounded_area = Math.round(area * 100) / 100;
