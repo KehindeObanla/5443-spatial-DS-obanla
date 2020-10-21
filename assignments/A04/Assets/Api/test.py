@@ -355,12 +355,54 @@ def intersection(left,bottom,right,top):
     # the result is a JSON string:
     # to be used as id in the frontend
     return convertedGeojson
+
 def inboundingBox(x1, y1, x2,y2, x, y) : 
     if (x > x1 and x < x2 and y > y1 and y < y2) : 
         return True
     else : 
         return False
-   
+
+def createfeatureCollection(lists,FeatureType):
+    answer_Collection = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    ft = FeatureType.lower()
+    lis =[]
+    lis.append(lists)
+    
+    if ft =="polygon":
+        geometry =[]
+        geometry.append(lis)
+        feature =[]
+        feature.append({
+            'type': FeatureType,
+            'geometry':geometry,
+            'properties':""
+        })
+        print( answer_Collection['features'] = feature)
+    elif ft =="point":
+        return answer_Collection['features'] = lists
+    elif ft=="linestring":
+        geometry =[]
+        geometry.append({
+            'type': FeatureType,
+            'geometry':geometry,
+            'properties':""
+        })
+        print(answer_Collection['features'] = geometry)
+    elif ft=="multilinestring":
+        geometry =[]
+        geometry.append(lis)
+        feature =[]
+        feature.append({
+            'type': FeatureType,
+            'geometry':geometry,
+            'properties':""
+        })
+        print(return answer_Collection['features'] = feature)
+    else:
+        pass  
 
 
     
@@ -369,5 +411,4 @@ def inboundingBox(x1, y1, x2,y2, x, y) :
 
 if __name__ == '__main__':
 
-    s = intersection(-121.45766500748957,34.90075728162189,-117.48191269134628,38.18786097194996)
-    print (s)
+   createfeatureCollection(lists,FeatureType)

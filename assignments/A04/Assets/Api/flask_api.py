@@ -10,6 +10,7 @@ from misc_functions import *
 import glob
 import json
 import math
+import re
 
 
 app = Flask(__name__)
@@ -243,6 +244,77 @@ def intersection(left,bottom,right,top):
     # the result is a JSON string:
     # to be used as id in the frontend
     return convertedGeojson
+""" creates a featurecollectiondepending of the  feature type """
+def createfeatureCollection(lists,FeatureType):
+    answer_Collection = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    ft = FeatureType.lower()
+    print("what i sent")
+    print(lists) 
+
+    if ft =="polygon":
+        feature =[]
+        feature.append(lists)
+        geometry =[]
+        geometry.append({
+            'type': 'Feature',
+            'geometry':{
+                'type':'Polygon',
+                'coordinates':feature
+            },
+        })
+        answer_Collection['features'] = geometry
+        print("ready point")
+        print(answer_Collection)
+        return  answer_Collection
+
+    elif ft =="point":
+        geometry =[]
+        geometry.append({
+            'type': 'Feature',
+            'geometry':{
+                'type':'Point',
+                'coordinates':lists[0]
+            },
+        })
+        answer_Collection['features'] = geometry
+        
+        return  answer_Collection
+    elif ft=="linestring":
+    
+        geometry =[]
+        geometry.append({
+           'type': 'Feature',
+            'geometry':{
+                'type':'LineString',
+                'coordinates':lists
+            },
+            'properties':None
+        })
+        answer_Collection['features'] = geometry
+        return  answer_Collection
+    elif ft=="multilinestring":
+        feature =[]
+        feature.append(lists)
+        geometry =[]
+        geometry.append({
+            'type': 'Feature',
+            'geometry':{
+                'type':'MultiLineString',
+                'coordinates':feature
+            },
+        })
+        answer_Collection['features'] = geometry
+        return  answer_Collection
+    else:
+        pass
+
+        
+
+
+    
 
 """
   ____    _  _____  _      ____    _    ____ _  _______ _   _ ____
@@ -487,6 +559,18 @@ def inter():
     right = coord[2]
     top = coord[3]
      
-    return intersection(left, bottom, right, top)  
+    return intersection(left, bottom, right, top)
+@app.route('/CreateFeature/')
+def Create():
+    """ Description: return a list of US nearest negihbours
+        Params: 
+            None
+        Example:http://localhost:8080/CreateFeature/?value="
+
+    """
+    parts= request.args.get("value", None).split(";")
+    send = json.loads(parts[0])
+    return createfeatureCollection(send,parts[1])
+
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

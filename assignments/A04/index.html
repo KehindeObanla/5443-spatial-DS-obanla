@@ -363,15 +363,17 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="far fa-file"></i>&nbsp;upload or paste a geojson
+                    <h4 class="modal-title" id="myModalLabel"><i class="far fa-file"></i>&nbsp;paste a set of coordinates and type
                     </h4>
                 </div>
                 <div class="modal-body">
                     <div>
-                        <label for="TexrareaGeo">paste a geojson</label>
-                        <textarea id="TexrareaGeo" name="TexrareaGeo" rows="4" cols="30">
+                        <label for="TexrareaGeo">paste coordinates</label>
+                        <textarea id="TexrareaGeo" name="TexrareaGeo" rows="5" cols="25">
                             </textarea>
                         <br><br>
+                        <label for="featureType">Feature Type:</label>
+                        <input type="text" id="featureType" name="fname"><br><br>
                         <button class="clickable" type="submit" id="loadmap" style="width:40%"><i
                             class=" fa fa-search "></i> submit</button>
                         <button class="clickable" type="submit" id="clearpasted" style="width:40%"><i
@@ -380,12 +382,8 @@
                     <br />
                     <hr style="margin-top: 15px">
                     <br />
-                    <div><label for="geojso">Choose geojson file to upload:</label>
-                        <input type="file" id="geojson" name="geojson" accept=".geojson">
-                        <br>
-                        <input type="submit">
-                    </div>
-                    <div id='invalidGeojson'></div>>
+
+                    <div id='invalidGeojson'></div>
 
 
 
