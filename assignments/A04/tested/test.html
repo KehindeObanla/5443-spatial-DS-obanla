@@ -43,7 +43,9 @@
     </style>
 
     <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js"></script>
+    <!-- required -->
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <!-- required end -->
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css" type="text/css" />
     <div id="map"></div>
@@ -60,7 +62,7 @@
             center: [-91.874, 42.76], // starting position
             zoom: 7 // starting zoom
         });
-
+        //required to draw 
         var draw = new MapboxDraw({
             displayControlsDefault: false,
             controls: {
@@ -71,8 +73,7 @@
         map.addControl(draw);
 
         map.on('draw.create', updateArea);
-        map.on('draw.delete', updateArea);
-        map.on('draw.update', updateArea);
+
 
         function updateArea(e) {
             var data = draw.getAll();
@@ -87,20 +88,11 @@
             var line = turf.lineString(CORD);
             var bbox = turf.bbox(line);
             console.log(CORD);
+            //send to flask
             console.log(bbox);
+            //required
 
 
-            //console.log(turf.meta.coordAll(bbox))
-            if (data.features.length > 0) {
-                var area = turf.area(data);
-                // restrict to area to 2 decimal points
-                var rounded_area = Math.round(area * 100) / 100;
-
-            } else {
-                answer.innerHTML = '';
-                if (e.type !== 'draw.delete')
-                    alert('Use the draw tools to draw a polygon!');
-            }
         }
     </script>
 

@@ -123,17 +123,13 @@ def validateJSON(jsonData):
 
 """ creates bounding box """
 def point_to_bbox(lng, lat, offset=.001):
-    #(left, bottom, right, top)
-
     return (float(lng-offset), float(lat-offset), float(lng+offset), float(lat+offset))
 
 """ loads rtee """
 def build_index():
-    #(left, bottom, right, top)
-
     eqks = glob.glob(
         "assignments\\A04\\Assets\\json\\earthquake_data\\earthquakes\\*.json")
-    del eqks[350:840]
+    del eqks[400:840]
     count = 0
     bad = 0
     earthquakeUniqueid = {}
@@ -167,7 +163,7 @@ def build_index():
                 count += 1
             else:
                 bad += 1
-        """  print(count) """
+       
     return idx, earthquakeUniqueid
 
  # returns a list of nearest neigh
@@ -178,14 +174,8 @@ def nearestNeighbors(lng, lat):
         "type": "FeatureCollection",
         "features": []
     }
-   
-
-    idx, rtreeid = build_index()
     left, bottom, right, top = point_to_bbox(lng, lat)
     nearest = list(idx.nearest((left, bottom, right, top), 5))
-    print(nearest)
-    nearest = list(dict.fromkeys(nearest)) 
-    print(nearest)  
     nearestlist = []
     # for each id get all other properties from
     # rtee and add it to a list
@@ -215,7 +205,7 @@ def intersection(left,bottom,right,top):
         "type": "FeatureCollection",
         "features": []
     }
-    idx, rtreeid = build_index()
+   
     intersect = list(idx.intersection((left, bottom, right,top),objects=True))
     
     intersectid =[]
@@ -246,8 +236,7 @@ def createfeatureCollection(lists,FeatureType):
         "features": []
     }
     ft = FeatureType.lower()
-    print("what i sent")
-    print(lists) 
+ 
 
     if ft =="polygon":
         feature =[]
@@ -261,8 +250,7 @@ def createfeatureCollection(lists,FeatureType):
             },
         })
         answer_Collection['features'] = geometry
-        print("ready point")
-        print(answer_Collection)
+     
         return  answer_Collection
 
     elif ft =="point":
@@ -327,7 +315,9 @@ STATE_BBOXS = load_data(
     "assignments\\A04\\assets\\json\\countries_states\\us_states_bbox.csv")
 CITIES = load_data(
     "assignments\\A04\\assets\\json\\countries_states\\major_cities.geojson")
+EQK = glob.glob("assignments\\A04\\assets\\json\\us_railroads\\*.geojson")
 idx = index.Index()
+idx, rtreeid= build_index()
 """
    ____   ___  _   _ _____ _____ ____  
   |  _ \ / _ \| | | |_   _| ____/ ___| 
@@ -503,8 +493,7 @@ def state_bbox():
 
 @app.route('/StatesRailroad/', methods=["GET"])
 def railroad():
-    """ Description: return a list of US state names
-                     with railroads
+    """ Description: returns a geojson of rail roads given a state name
         Params: 
             None
         Example: http://localhost:8080/StatesRailroad?state=mis
@@ -523,8 +512,8 @@ def railroad():
     state = state.lower()
     
     results = []
-    eqks = glob.glob("assignments\\A04\\assets\\json\\us_railroads\\*.geojson")
-    for efile in eqks:
+   
+    for efile in EQK:
 
         with open(efile, 'r', encoding='utf-8') as f:
             data = f.read()
@@ -543,7 +532,7 @@ def railroad():
     return handle_response(answer_Collection) 
 @app.route('/interSection/')
 def inter():
-    """ Description: return a list of US nearest negihbours
+    """ Description: takes a bounding box and returns a feature collection with
         Params: 
             None
         Example:http://localhost:8080/interSection/?lngLat="

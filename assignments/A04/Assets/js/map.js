@@ -123,12 +123,13 @@ map.on('load', function() {
 //random string generator
 //random string generator
 //random string generator
-function makeid(length) {
+function makeid(length, uniqueue) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
     for (var i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        result += uniqueue;
     }
     return result;
 }
@@ -138,8 +139,13 @@ function makeid(length) {
 
 //clear nearest neghibour lat lng
 $('#findClearNearest').click(function() {
-    $("#lngInputs").val('')
-    $("#latInputs").val('')
+    $("#lngInputs").val('');
+    $("#latInputs").val('');
+    lineAnswers = document.getElementById('latlngonclick');
+    lineAnswers.innerHTML = " ";
+
+
+    document.getElementById("addPolygon").checked = false;
 
 });
 // find nearest and load layer
@@ -149,9 +155,9 @@ $('#findNearest').click(function() {
     var enterLat = $("#latInputs").val()
 
     var enterLL = turf.point([enterLng, enterLat]);
-    var generate = 'near'
-    var random = makeid(6);
-    generate = generate + random;
+    var random = 'near'
+    var generate = makeid(6, random);
+
     deleteLayer.push(generate)
     $.getJSON("http://localhost:8080/nearestNeighbors/?lngLat=" + enterLng + "," + enterLat)
         .done(function(json) {
@@ -193,9 +199,8 @@ function addPolygon(feature) {
 }
 // adds a layer for a polygon
 function addpolygonlayer(json) {
-    var generate = 'MAP'
-    var random = makeid(6);
-    generate = generate + random;
+    var random = 'near'
+    var generate = makeid(6, random);
     deleteLayer.push(generate)
     map.addSource(generate, {
         'type': 'geojson',
@@ -301,9 +306,8 @@ $("#searchCity").click(function(event) {
 // given the long lat of both cities add a 
 //layer
 function addLayer(lng, lat, lng1, lat1) {
-    var generate = 'route'
-    var random = makeid(6);
-    generate = generate + random;
+    var random = 'route'
+    var generate = makeid(6, random);
     deleteLayer.push(generate)
     map.addSource(generate, {
         'type': 'geojson',
@@ -432,9 +436,9 @@ $("#searchRail").click(function(event) {
 //create layer for rail road given the 
 //geojson
 function addLayer1(json) {
-    var generate = 'Rail'
-    var random = makeid(6);
-    generate = generate + random;
+    var random = 'Rail'
+    var generate = makeid(6, random);
+
     deleteLayer.push(generate);
     var latlng = json['geometry']['coordinates'][0];
     var enterLng = latlng[0];
@@ -545,18 +549,22 @@ $("#loadmap").click(function(event) {
     } else {
         if (check(Coordinate)) {
             var answer = convert(Coordinate)
-                //call back end
+            console.log(answer[0]);
+            //call back end
             $.get("http://localhost:8080/CreateFeature/?value=" + JSON.stringify(answer) + ";" + featureValue)
                 .done(function(data) {
 
                     if (checked == "polygon") {
 
-                        createpastedLayerPolygon(data)
+                        createpastedLayerPolygon(data, answer[0])
+                    } else if (checked == "linestring") {
+                        createpastedLayerLinsString(data, answer[0])
+
                     } else {
 
-                        createpastedLayerPoints(data)
+                        createpastedLayerPoints(data, answer[0])
                     }
-
+                    // add download button
 
                 });
 
@@ -573,10 +581,9 @@ $("#loadmap").click(function(event) {
 /* add layerfor pasted geojson for points */
 /* add layerfor pasted geojson for points */
 /* add layerfor pasted geojson for points */
-function createpastedLayerPoints(json) {
-    var generate = 'Geo'
-    var random = makeid(6);
-    generate = generate + random;
+function createpastedLayerPoints(json, flytocoords) {
+    var random = 'Geo'
+    var generate = makeid(6, random);
     deleteLayer.push(generate);
     map.addSource(generate, {
         'type': 'geojson',
@@ -592,6 +599,10 @@ function createpastedLayerPoints(json) {
             'circle-color': '#f803fc'
         }
     });
+    map.flyTo({
+        center: flytocoords,
+        zoom: 5,
+    });
 
 
 }
@@ -599,10 +610,9 @@ function createpastedLayerPoints(json) {
 /* add layerfor pasted geojson for polygon*/
 /* add layerfor pasted geojson for polygon*/
 /* add layerfor pasted geojson for polygon*/
-function createpastedLayerPolygon(json) {
-    var generate = 'Geo'
-    var random = makeid(6);
-    generate = generate + random;
+function createpastedLayerPolygon(json, flytocoords) {
+    var random = 'Geo'
+    var generate = makeid(6, random);
     deleteLayer.push(generate);
     map.addSource(generate, {
         'type': 'geojson',
@@ -619,9 +629,46 @@ function createpastedLayerPolygon(json) {
         },
         'filter': ['==', '$type', 'Polygon']
     });
+    map.flyTo({
+        center: flytocoords,
+        zoom: 4,
+    });
 
 
 }
+/* add layerfor pasted geojson for lineString*/
+/* add layerfor pasted geojson for lineString*/
+/* add layerfor pasted geojson for lineString*/
+function createpastedLayerLinsString(json, flytocoords) {
+    var random = 'Geo'
+    var generate = makeid(6, random);
+    deleteLayer.push(generate);
+    map.addSource(generate, {
+        'type': 'geojson',
+        'data': json
+            // poly
+    });
+    map.addLayer({
+        'id': generate,
+        'type': 'line',
+        'source': generate,
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': '#FF0000',
+            'line-width': 8
+        }
+    });
+    map.flyTo({
+        center: flytocoords,
+        zoom: 15,
+    });
+
+
+}
+
 //clear textbox for pasted geojson
 $("#clearpasted").click(function(event) {
     $("#TexrareaGeo").val("");
@@ -632,6 +679,23 @@ $("#clearpasted").click(function(event) {
     getline.style.display = "none"
 
 });
+
+
+
+// Start file download.
+
+// function downloadObjectAsJson(exportObj, exportName) {
+//     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+
+//     var downloadAnchorNode = document.createElement('a');
+//     downloadAnchorNode.setAttribute("href", dataStr);
+//     downloadAnchorNode.setAttribute('download', exportName + ".geojson ");
+//     downloadAnchorNode.style.display = 'none';
+//     document.body.appendChild(downloadAnchorNode); // required for firefox
+//     downloadAnchorNode.click();
+//     downloadAnchorNode.remove();
+// }
+// Start file download.
 
 
 function getSelectedCheckboxValues(boxs) {
@@ -651,7 +715,7 @@ btn.addEventListener('click', (event) => {
     var list = [];
     list = getSelectedCheckboxValues('boxs')
     list.forEach(removelayers);
-    console.log(list);
+
 
 });
 
@@ -659,21 +723,17 @@ btn.addEventListener('click', (event) => {
 
 //to remove layers
 function removelayers(layer) {
-    console.log("entered");
-    console.log(layer);
-    console.log(deleteLayer);
-    console.log(deleteLayer.length);
     var afterdellete = []
     for (i = 0; i < deleteLayer.length; i++) {
         var contain = deleteLayer[i];
-        console.log(contain);
+
         if (contain.includes(layer)) {
             afterdellete.push(contain);
             map.removeLayer(contain);
             map.removeSource(contain);
         }
     }
-    console.log(deleteLayer);
+
     for (i = 0; i < afterdellete.length; i++) {
         if (deleteLayer.includes(afterdellete[i])) {
             const index = deleteLayer.indexOf(afterdellete[i]);
@@ -697,15 +757,16 @@ map.on('draw.create', updateArea);
 
 function updateArea(e) {
     var data = drawmodal.getAll();
-
     var coords = turf.meta.coordAll(data);
     var line = turf.lineString(coords);
     var bbox = turf.bbox(line);
-    var generate = 'DrawL'
-    var random = makeid(6);
-    generate = generate + random;
-    deleteLayer.push(generate);
+    var random = 'DrawL'
+    var generate = makeid(6, random);
 
+    deleteLayer.push(generate);
+    var poly = turf.bboxPolygon(bbox);
+
+    boundingBoxPolygon(poly)
     $.getJSON("http://localhost:8080/interSection/?lngLat=" + bbox)
         .done(function(json) {
             map.addSource(generate, {
@@ -730,6 +791,26 @@ function updateArea(e) {
 
 }
 
+function boundingBoxPolygon(polygonfeature) {
+    var random = 'DrawL'
+    var generate = makeid(6, random);
+    deleteLayer.push(generate);
+    map.addSource(generate, {
+        'type': 'geojson',
+        'data': polygonfeature
+            // poly
+    });
+    map.addLayer({
+        'id': generate,
+        'type': 'fill',
+        'source': generate,
+        'paint': {
+            'fill-color': '#0a0a0a',
+            'fill-opacity': 0.4
+        },
+        'filter': ['==', '$type', 'Polygon']
+    });
+}
 
 
 // Coordinates Tool
@@ -747,7 +828,10 @@ map.on(touchEvent, function(e) {
         }
 
     };
+    latlngonclick
     document.getElementById('info').innerHTML =
+        JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
+    document.getElementById('latlngonclick').innerHTML =
         JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
         // create json to store
         // create json to store
