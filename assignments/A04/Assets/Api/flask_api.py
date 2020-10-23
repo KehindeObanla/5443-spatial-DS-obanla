@@ -195,7 +195,8 @@ def nearestNeighbors(lng, lat):
     # the result is a JSON string:
     # to be used as id in the frontend
     return convertedGeojson
-
+""" retruns a geojson that includes the
+latlng in a within a bounding box """
 def intersection(left,bottom,right,top):
     left = round(float(left),4)
     bottom = round(float(bottom),4)

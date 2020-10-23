@@ -133,6 +133,18 @@ function makeid(length, uniqueue) {
     }
     return result;
 }
+/* random color generator */
+/* random color generator */
+/* random color generator */
+/* random color generator */
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
 //enter Lat Long for nearest neghibour
 //enter Lat Long for nearest neghibour
 //enter Lat Long for nearest neghibour
@@ -157,7 +169,7 @@ $('#findNearest').click(function() {
     var enterLL = turf.point([enterLng, enterLat]);
     var random = 'near'
     var generate = makeid(6, random);
-
+    paint = getRandomColor();
     deleteLayer.push(generate)
     $.getJSON("http://localhost:8080/nearestNeighbors/?lngLat=" + enterLng + "," + enterLat)
         .done(function(json) {
@@ -174,7 +186,7 @@ $('#findNearest').click(function() {
                 'type': 'circle',
                 'paint': {
                     'circle-radius': 6,
-                    'circle-color': '#B42222'
+                    'circle-color': paint
                 }
             });
             if (document.getElementById("addPolygon").checked == true) {
@@ -199,6 +211,7 @@ function addPolygon(feature) {
 }
 // adds a layer for a polygon
 function addpolygonlayer(json) {
+    paint = getRandomColor();
     var random = 'near'
     var generate = makeid(6, random);
     deleteLayer.push(generate)
@@ -212,7 +225,7 @@ function addpolygonlayer(json) {
         'type': 'fill',
         'source': generate,
         'paint': {
-            'fill-color': '#0a0a0a',
+            'fill-color': paint,
             'fill-opacity': 0.9
         },
         'filter': ['==', '$type', 'Polygon']
@@ -306,6 +319,7 @@ $("#searchCity").click(function(event) {
 // given the long lat of both cities add a 
 //layer
 function addLayer(lng, lat, lng1, lat1) {
+    paint = getRandomColor();
     var random = 'route'
     var generate = makeid(6, random);
     deleteLayer.push(generate)
@@ -333,7 +347,7 @@ function addLayer(lng, lat, lng1, lat1) {
             'line-cap': 'round'
         },
         'paint': {
-            'line-color': '#fcba03',
+            'line-color': paint,
             'line-width': 2
         }
 
@@ -436,6 +450,7 @@ $("#searchRail").click(function(event) {
 //create layer for rail road given the 
 //geojson
 function addLayer1(json) {
+    paint = getRandomColor();
     var random = 'Rail'
     var generate = makeid(6, random);
 
@@ -458,13 +473,13 @@ function addLayer1(json) {
             'line-cap': 'round'
         },
         'paint': {
-            'line-color': '#4103fc',
+            'line-color': paint,
             'line-width': 1
         }
     });
     map.flyTo({
         center: [enterLng, enterLat],
-        zoom: 2
+        zoom: 4
     });
 }
 //read user input and populate states with
@@ -517,10 +532,11 @@ function check(expr) {
 // takes a string array and convert to a float array
 function convert(str) {
     list = [];
-    lisy = [];
-
+    ConvertedString = [];
+    //splits by [];
     res = str.split(/(\[.*?\])/).filter(Boolean);
-
+    // checks if an index is not whitspace or comma
+    // and adds it to an aray
     for (i = 0; i < res.length; i++) {
         var thing = res[i].trim();
         if (thing != ',') {
@@ -532,11 +548,13 @@ function convert(str) {
 
         }
     }
+    console.log(list);
+    //converts  a string array to float
     for (i = 0; i < list.length; i++) {
         array = list[i].match(/-?\d+(?:\.\d+)?/g).map(Number);
-        lisy.push(array);
+        ConvertedString.push(array);
     }
-    return lisy;
+    return ConvertedString;
 }
 //onclick call addeojsonlayer
 $("#loadmap").click(function(event) {
@@ -557,7 +575,7 @@ $("#loadmap").click(function(event) {
                     if (checked == "polygon") {
 
                         createpastedLayerPolygon(data, answer[0])
-                    } else if (checked == "linestring") {
+                    } else if (checked == "linestring" || checked == "multilinestring") {
                         createpastedLayerLinsString(data, answer[0])
 
                     } else {
@@ -582,6 +600,7 @@ $("#loadmap").click(function(event) {
 /* add layerfor pasted geojson for points */
 /* add layerfor pasted geojson for points */
 function createpastedLayerPoints(json, flytocoords) {
+    paint = getRandomColor();
     var random = 'Geo'
     var generate = makeid(6, random);
     deleteLayer.push(generate);
@@ -596,7 +615,7 @@ function createpastedLayerPoints(json, flytocoords) {
         'type': 'circle',
         'paint': {
             'circle-radius': 6,
-            'circle-color': '#f803fc'
+            'circle-color': paint
         }
     });
     map.flyTo({
@@ -611,6 +630,7 @@ function createpastedLayerPoints(json, flytocoords) {
 /* add layerfor pasted geojson for polygon*/
 /* add layerfor pasted geojson for polygon*/
 function createpastedLayerPolygon(json, flytocoords) {
+    paint = getRandomColor();
     var random = 'Geo'
     var generate = makeid(6, random);
     deleteLayer.push(generate);
@@ -624,7 +644,7 @@ function createpastedLayerPolygon(json, flytocoords) {
         'type': 'fill',
         'source': generate,
         'paint': {
-            'fill-color': '#0a0a0a',
+            'fill-color': paint,
             'fill-opacity': 0.2
         },
         'filter': ['==', '$type', 'Polygon']
@@ -640,6 +660,7 @@ function createpastedLayerPolygon(json, flytocoords) {
 /* add layerfor pasted geojson for lineString*/
 /* add layerfor pasted geojson for lineString*/
 function createpastedLayerLinsString(json, flytocoords) {
+    paint = getRandomColor();
     var random = 'Geo'
     var generate = makeid(6, random);
     deleteLayer.push(generate);
@@ -657,8 +678,8 @@ function createpastedLayerLinsString(json, flytocoords) {
             'line-cap': 'round'
         },
         'paint': {
-            'line-color': '#FF0000',
-            'line-width': 8
+            'line-color': paint,
+            'line-width': 5
         }
     });
     map.flyTo({
@@ -718,6 +739,15 @@ btn.addEventListener('click', (event) => {
 
 
 });
+const btns = document.querySelector('#clearcheckbox');
+btns.addEventListener('click', (event) => {
+    var list = [];
+    list = getSelectedCheckboxValues('boxs')
+    for (i = 0; i < list.length; i++) {
+        document.getElementById(list[i]).checked = false;
+    }
+
+});
 
 
 
@@ -756,6 +786,7 @@ map.on('draw.create', updateArea);
 
 
 function updateArea(e) {
+    paint = getRandomColor();
     var data = drawmodal.getAll();
     var coords = turf.meta.coordAll(data);
     var line = turf.lineString(coords);
@@ -780,7 +811,7 @@ function updateArea(e) {
                 'type': 'circle',
                 'paint': {
                     'circle-radius': 6,
-                    'circle-color': '#f803fc'
+                    'circle-color': paint
                 }
             });
 
@@ -792,6 +823,7 @@ function updateArea(e) {
 }
 
 function boundingBoxPolygon(polygonfeature) {
+    paint = getRandomColor();
     var random = 'DrawL'
     var generate = makeid(6, random);
     deleteLayer.push(generate);
@@ -805,7 +837,7 @@ function boundingBoxPolygon(polygonfeature) {
         'type': 'fill',
         'source': generate,
         'paint': {
-            'fill-color': '#0a0a0a',
+            'fill-color': paint,
             'fill-opacity': 0.4
         },
         'filter': ['==', '$type', 'Polygon']

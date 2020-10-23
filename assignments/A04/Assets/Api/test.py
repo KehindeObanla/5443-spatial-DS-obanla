@@ -11,6 +11,7 @@ import glob
 import json
 import math
 from rtree import index
+import random
 
 idx = index.Index()
 def finddistance():
@@ -362,53 +363,15 @@ def inboundingBox(x1, y1, x2,y2, x, y) :
     else : 
         return False
 
-def createfeatureCollection(lists,FeatureType):
-    answer_Collection = {
-        "type": "FeatureCollection",
-        "features": []
-    }
-    ft = FeatureType.lower()
-    lis =[]
-    lis.append(lists)
-    
-    if ft =="polygon":
-        geometry =[]
-        geometry.append(lis)
-        feature =[]
-        feature.append({
-            'type': FeatureType,
-            'geometry':geometry,
-            'properties':""
-        })
-        print( answer_Collection['features'] = feature)
-    elif ft =="point":
-        return answer_Collection['features'] = lists
-    elif ft=="linestring":
-        geometry =[]
-        geometry.append({
-            'type': FeatureType,
-            'geometry':geometry,
-            'properties':""
-        })
-        print(answer_Collection['features'] = geometry)
-    elif ft=="multilinestring":
-        geometry =[]
-        geometry.append(lis)
-        feature =[]
-        feature.append({
-            'type': FeatureType,
-            'geometry':geometry,
-            'properties':""
-        })
-        print(return answer_Collection['features'] = feature)
-    else:
-        pass  
 
 
+def randomcolorgenerator():
+    r = lambda: random.randint(0,255)
+    print('#%02X%02X%02X' % (r(),r(),r()))
     
 
 
 
 if __name__ == '__main__':
 
-   createfeatureCollection(lists,FeatureType)
+   randomcolorgenerator()
