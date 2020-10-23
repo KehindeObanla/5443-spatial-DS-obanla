@@ -750,15 +750,17 @@ btn.addEventListener('click', (event) => {
 
 });
 /* unchecks all the checked checkboxes */
-const btns = document.querySelector('#clearcheckbox');
-btns.addEventListener('click', (event) => {
-    var list = [];
-    list = getSelectedCheckboxValues('boxs')
-    for (i = 0; i < list.length; i++) {
-        document.getElementById(list[i]).checked = false;
-    }
+window.onload = function() {
+    const btns = document.querySelector('#clearcheckbox');
+    btns.addEventListener('click', (event) => {
+        var list = [];
+        list = getSelectedCheckboxValues('boxs')
+        for (i = 0; i < list.length; i++) {
+            document.getElementById(list[i]).checked = false;
+        }
 
-});
+    });
+};
 
 
 /* removes all layers added to the delete
