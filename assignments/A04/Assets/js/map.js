@@ -167,6 +167,7 @@ $('#findNearest').click(function() {
     var enterLat = $("#latInputs").val()
 
     var enterLL = turf.point([enterLng, enterLat]);
+    /* generate a unique layer id */
     var random = 'near'
     var generate = makeid(6, random);
     paint = getRandomColor();
@@ -212,6 +213,7 @@ function addPolygon(feature) {
 // adds a layer for a polygon
 function addpolygonlayer(json) {
     paint = getRandomColor();
+    /* generate a unique layer id */
     var random = 'near'
     var generate = makeid(6, random);
     deleteLayer.push(generate)
@@ -320,6 +322,7 @@ $("#searchCity").click(function(event) {
 //layer
 function addLayer(lng, lat, lng1, lat1) {
     paint = getRandomColor();
+    /* generate a unique layer id */
     var random = 'route'
     var generate = makeid(6, random);
     deleteLayer.push(generate)
@@ -452,6 +455,7 @@ $("#searchRail").click(function(event) {
 function addLayer1(json) {
     paint = getRandomColor();
     var random = 'Rail'
+        /* generate a unique layer id */
     var generate = makeid(6, random);
 
     deleteLayer.push(generate);
@@ -602,6 +606,7 @@ $("#loadmap").click(function(event) {
 function createpastedLayerPoints(json, flytocoords) {
     paint = getRandomColor();
     var random = 'Geo'
+        /* generate a unique layer id */
     var generate = makeid(6, random);
     deleteLayer.push(generate);
     map.addSource(generate, {
@@ -630,8 +635,10 @@ function createpastedLayerPoints(json, flytocoords) {
 /* add layerfor pasted geojson for polygon*/
 /* add layerfor pasted geojson for polygon*/
 function createpastedLayerPolygon(json, flytocoords) {
+    // gets a random color
     paint = getRandomColor();
     var random = 'Geo'
+        /* generate a unique layer id */
     var generate = makeid(6, random);
     deleteLayer.push(generate);
     map.addSource(generate, {
@@ -660,8 +667,10 @@ function createpastedLayerPolygon(json, flytocoords) {
 /* add layerfor pasted geojson for lineString*/
 /* add layerfor pasted geojson for lineString*/
 function createpastedLayerLinsString(json, flytocoords) {
+    // gets a random color
     paint = getRandomColor();
     var random = 'Geo'
+        /* generate a unique layer id */
     var generate = makeid(6, random);
     deleteLayer.push(generate);
     map.addSource(generate, {
@@ -718,7 +727,7 @@ $("#clearpasted").click(function(event) {
 // }
 // Start file download.
 
-
+/* returns a list of checked boxes */
 function getSelectedCheckboxValues(boxs) {
     const checkboxes = document.querySelectorAll(`input[name="${boxs}"]:checked`);
 
@@ -730,7 +739,8 @@ function getSelectedCheckboxValues(boxs) {
 
     return values;
 }
-
+/* given the list of checkboxes remove the layer
+remove all layers  */
 const btn = document.querySelector('#buttondelete');
 btn.addEventListener('click', (event) => {
     var list = [];
@@ -739,6 +749,7 @@ btn.addEventListener('click', (event) => {
 
 
 });
+/* unchecks all the checked checkboxes */
 const btns = document.querySelector('#clearcheckbox');
 btns.addEventListener('click', (event) => {
     var list = [];
@@ -750,10 +761,13 @@ btns.addEventListener('click', (event) => {
 });
 
 
+/* removes all layers added to the delete
+map that need to be deleted */
 
-//to remove layers
 function removelayers(layer) {
     var afterdellete = []
+        /*  deletes the layer that has been selcted to be 
+        deleted from the map */
     for (i = 0; i < deleteLayer.length; i++) {
         var contain = deleteLayer[i];
 
@@ -763,7 +777,7 @@ function removelayers(layer) {
             map.removeSource(contain);
         }
     }
-
+    /* removes all the deleted layer from the array */
     for (i = 0; i < afterdellete.length; i++) {
         if (deleteLayer.includes(afterdellete[i])) {
             const index = deleteLayer.indexOf(afterdellete[i]);
@@ -771,6 +785,8 @@ function removelayers(layer) {
         }
     }
 }
+//draw tool
+//draw tool
 //draw tool
 var drawmodal = new MapboxDraw({
     displayControlsDefault: false,
@@ -784,7 +800,9 @@ drawTools.appendChild(drawmodal.onAdd(map)).setAttribute("style", "display: inli
 map.on('draw.create', updateArea);
 
 
-
+/* creates a bounding box from the polygon 
+drawn on the map gets the earthquake data 
+and creates a layer */
 function updateArea(e) {
     paint = getRandomColor();
     var data = drawmodal.getAll();
@@ -821,7 +839,8 @@ function updateArea(e) {
 
 
 }
-
+// adds a layer to the boundiing box created for 
+// the polygon drawn
 function boundingBoxPolygon(polygonfeature) {
     paint = getRandomColor();
     var random = 'DrawL'
