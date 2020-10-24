@@ -242,8 +242,6 @@ def checkgeojson(dic,value,key ="type"):
             
         elif(key =="type" and value == "FeatureCollection"):
             flag2 = checkFeatureCollection(dic)
-            print("FeatureCollection")
-            print (flag2)
             if(flag2 ==True):
                 return answer
             else:
@@ -258,21 +256,21 @@ def checkfeature(dic):
     count = 0
     for key, value in dic.items() :
         if(key =="type" and value == "Feature"):
-            print("works for reature")
+           
             count+=1
         if(key =="geometry" and isinstance(value ,dict)):
-            print("works for geometry")
+           
             count+=1
             for key, value in value.items() :
                 if(key == "type" and value in featuretype):
-                    print("works for featuretype")
+                  
                     count+=1
                 if(key =="coordinates"and isinstance(value ,list)):
-                    print("works for coordinates")
+                 
                     count+=1
         if(key =="properties" and isinstance(value ,dict)):
             count+=1
-    print(count)
+    
     if(count >=4 and count < 6):
         return True
     else:
@@ -551,11 +549,7 @@ def Create():
     """
 
     parts= request.args.get("value", None).split(";")
-    print("printing part")
-    print(parts)
-    print(type(parts))
     send = json.loads(parts[0])
-    print(type(parts))
     featureorFC = parts[1]
     return checkgeojson(send,featureorFC)
 
