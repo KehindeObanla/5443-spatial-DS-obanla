@@ -554,13 +554,9 @@ def Create():
     print("printing part")
     print(parts)
     print(type(parts))
-    print("printing part0")
     send = json.loads(parts[0])
+    print(type(parts))
     featureorFC = parts[1]
-    print(" type of part0 after loads")
-    print(type (send))
-    print("feature or fc")
-    print(featureorFC)
     return checkgeojson(send,featureorFC)
 
 

@@ -233,7 +233,7 @@ function addpolygonlayer(json) {
         'source': generate,
         'paint': {
             'fill-color': paint,
-            'fill-opacity': 0.9
+            'fill-opacity': 0.7
         },
         'filter': ['==', '$type', 'Polygon']
     });
@@ -440,19 +440,24 @@ $("#stateSelectRail").click(function(event) {
 $("#searchRail").click(function(event) {
 
     let state = $("#stateSelectRail").val();
-    $.get("http://localhost:8080/StatesRailroad/?state=" + state)
-        .done(function(data) {
+    if (state == null || state == " ") {
+        alert("Please select a State Field");
+    } else {
+        $.get("http://localhost:8080/StatesRailroad/?state=" + state)
+            .done(function(data) {
 
-            if (data['count'] == 1) {
-                getline = document.getElementById('invalidState');
-                getline.style.display = "block"
-                getline.innerHTML = '<p>' + 'database does not contain railroad data for selected state' + '</p>';
+                if (data['count'] == 1) {
+                    getline = document.getElementById('invalidState');
+                    getline.style.display = "block"
+                    getline.innerHTML = '<p>' + 'database does not contain railroad data for selected state' + '</p>';
 
-            } else {
-                addLayer1(data)
-            }
+                } else {
+                    addLayer1(data)
+                }
 
-        });
+            });
+    }
+
 
 });
 //create layer for rail road given the 
@@ -567,6 +572,7 @@ $("#loadmap").click(function(event) {
     } else {
         if (check(Coordinate)) {
             var answer = convert(Coordinate)
+
             if (answer == "false") {
                 getline = document.getElementById('invalidGeojson');
                 getline.style.display = "block"
@@ -840,6 +846,10 @@ function updateArea(e) {
                     'circle-radius': 6,
                     'circle-color': paint
                 }
+            });
+            map.flyTo({
+                center: coords[0],
+                zoom: 5,
             });
 
 
