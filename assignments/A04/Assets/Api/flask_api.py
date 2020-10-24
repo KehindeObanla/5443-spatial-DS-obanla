@@ -230,70 +230,66 @@ def intersection(left,bottom,right,top):
     # to be used as id in the frontend
     return convertedGeojson
 
-""" creates a featurecollection depending of the  feature type """
-def createfeatureCollection(lists,FeatureType):
-    answer_Collection = {
-        "type": "FeatureCollection",
-        "features": []
-    }
-    ft = FeatureType.lower()
- 
-
-    if ft =="polygon":
-        feature =[]
-        feature.append(lists)
-        geometry =[]
-        geometry.append({
-            'type': 'Feature',
-            'geometry':{
-                'type':'Polygon',
-                'coordinates':feature
-            },
-        })
-        answer_Collection['features'] = geometry
-     
-        return  answer_Collection
-
-    elif ft =="point":
-        geometry =[]
-        geometry.append({
-            'type': 'Feature',
-            'geometry':{
-                'type':'Point',
-                'coordinates':lists[0]
-            },
-        })
-        answer_Collection['features'] = geometry
+""" checks a valid geojson """
+def checkgeojson(dic,value,key ="type"):
+        answer ="True"
+        if(key =="type" and value == "Feature"):
+            flag = checkfeature(dic)
+            if(flag ==True):
+                return answer
+            else:
+                return "invalid geojson"
+            
+        elif(key =="type" and value == "FeatureCollection"):
+            flag2 = checkFeatureCollection(dic)
+            print("FeatureCollection")
+            print (flag2)
+            if(flag2 ==True):
+                return answer
+            else:
+                return "invalid geojson"
+        else:
+            return "invalid geojson"
+           
         
-        return  answer_Collection
-    elif ft=="linestring":
-    
-        geometry =[]
-        geometry.append({
-           'type': 'Feature',
-            'geometry':{
-                'type':'LineString',
-                'coordinates':lists
-            },
-            'properties':None
-        })
-        answer_Collection['features'] = geometry
-        return  answer_Collection
-    elif ft=="multilinestring":
-        feature =[]
-        feature.append(lists)
-        geometry =[]
-        geometry.append({
-            'type': 'Feature',
-            'geometry':{
-                'type':'MultiLineString',
-                'coordinates':feature
-            },
-        })
-        answer_Collection['features'] = geometry
-        return  answer_Collection
+""" checks a valid feature geojson """
+def checkfeature(dic):
+    featuretype =["Point", "LineString", "Polygon", "MultiPoint", "MultiLineString","MultiPolygon"]
+    count = 0
+    for key, value in dic.items() :
+        if(key =="type" and value == "Feature"):
+            print("works for reature")
+            count+=1
+        if(key =="geometry" and isinstance(value ,dict)):
+            print("works for geometry")
+            count+=1
+            for key, value in value.items() :
+                if(key == "type" and value in featuretype):
+                    print("works for featuretype")
+                    count+=1
+                if(key =="coordinates"and isinstance(value ,list)):
+                    print("works for coordinates")
+                    count+=1
+        if(key =="properties" and isinstance(value ,dict)):
+            count+=1
+    print(count)
+    if(count >=4 and count < 6):
+        return True
     else:
-        pass
+        return False
+""" checks a valid featurecollection geojson """
+def checkFeatureCollection(dic):
+    count =0
+    for key, value in dic.items() :
+        if(key =="type" and value == "FeatureCollection"):
+            count+=1
+        if(key =="features" and isinstance(value[0] ,dict)):
+            count+=1
+            for feature in value:
+                flag = checkfeature(feature)
+            if(flag == True):
+                return True
+    return False
 
         
 
@@ -545,17 +541,28 @@ def inter():
     top = coord[3]
      
     return intersection(left, bottom, right, top)
-@app.route('/CreateFeature/')
+@app.route('/ValidGeoJson/', methods=["GET"])
 def Create():
-    """ Description: return a list of US nearest negihbours
+    """ Description: returns true or false
         Params: 
             None
-        Example:http://localhost:8080/CreateFeature/?value="
+        Example:http://localhost:8080/ValidGeoJson/?value="
 
     """
+
     parts= request.args.get("value", None).split(";")
+    print("printing part")
+    print(parts)
+    print(type(parts))
+    print("printing part0")
     send = json.loads(parts[0])
-    return createfeatureCollection(send,parts[1])
+    featureorFC = parts[1]
+    print(" type of part0 after loads")
+    print(type (send))
+    print("feature or fc")
+    print(featureorFC)
+    return checkgeojson(send,featureorFC)
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

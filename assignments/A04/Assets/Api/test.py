@@ -369,9 +369,20 @@ def randomcolorgenerator():
     r = lambda: random.randint(0,255)
     print('#%02X%02X%02X' % (r(),r(),r()))
     
-
+def checkgeojson():
+    json ={
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [125.6, 10.1]
+  },
+  "properties": {
+    "name": "Dinagat Islands"
+  }
+} 
+  
 
 
 if __name__ == '__main__':
 
-   randomcolorgenerator()
+   checkgeojson()

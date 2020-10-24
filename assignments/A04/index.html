@@ -372,8 +372,10 @@
                         <textarea id="TexrareaGeo" name="TexrareaGeo" rows="5" cols="25">
                             </textarea>
                         <br><br>
-                        <label for="featureType">Feature Type:</label>
-                        <input type="text" id="featureType" name="fname"><br><br>
+                        <input type="radio" id="FC" name="Featuretype" value="FeatureCollection" required>
+                        <label for="FC">FeatureCollection</label><br>
+                        <input type="radio" id="Feat" name="Featuretype" value="Feature">
+                        <label for="Feat">Feature</label><br>
                         <button class="clickable" type="submit" id="loadmap" style="width:40%"><i
                             class=" fa fa-search "></i> submit</button>
                         <button class="clickable" type="submit" id="clearpasted" style="width:40%"><i

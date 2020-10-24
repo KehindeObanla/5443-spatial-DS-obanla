@@ -127,9 +127,11 @@ function makeid(length, uniqueue) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
+    result += uniqueue;
     for (var i = 0; i < length; i++) {
+
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        result += uniqueue;
+
     }
     return result;
 }
@@ -207,8 +209,11 @@ $('#findNearest').click(function() {
 
 // function to add polygon to nearest points
 function addPolygon(feature) {
-    var enveloped = turf.envelope(feature);
-    return enveloped;
+    // creates a bbox for the given geojson
+    var bbox = turf.bbox(feature);
+    //creates a polygon with the bouning box
+    var poly = turf.bboxPolygon(bbox);
+    return poly;
 }
 // adds a layer for a polygon
 function addpolygonlayer(json) {
@@ -533,62 +538,56 @@ function check(expr) {
     }
     return (holder.length === 0) // return true if length is 0, otherwise false
 }
-// takes a string array and convert to a float array
+// converts to a json object
 function convert(str) {
-    list = [];
-    ConvertedString = [];
-    //splits by [];
-    res = str.split(/(\[.*?\])/).filter(Boolean);
-    // checks if an index is not whitspace or comma
-    // and adds it to an aray
-    for (i = 0; i < res.length; i++) {
-        var thing = res[i].trim();
-        if (thing != ',') {
+    //replaces the single qoutes with double qoutes
+    str = str.replace(/'/g, '"')
+    var tojson = JSON.parse(str);
+    if (typeof tojson === "object") {
 
-            if (/\S/.test(thing)) {
-                list.push(thing);
-
-            }
-
-        }
+        return tojson;
+    } else {
+        return "false"
     }
-    console.log(list);
-    //converts  a string array to float
-    for (i = 0; i < list.length; i++) {
-        array = list[i].match(/-?\d+(?:\.\d+)?/g).map(Number);
-        ConvertedString.push(array);
-    }
-    return ConvertedString;
 }
 //onclick call addeojsonlayer
 $("#loadmap").click(function(event) {
     var Coordinate = $("#TexrareaGeo").val();
-    var featureValue = $("#featureType").val();
-    var checked = featureValue.toLowerCase();
+    var radios = document.getElementsByName('Featuretype');
+    for (var i = 0, length = radios.length; i < length; i++) {
+        if (radios[i].checked) {
+
+            var featureValue = radios[i].value
+            break;
+        }
+    }
 
     if (Coordinate == null || featureValue == null || Coordinate == "" || featureValue == "") {
         alert("Please Fill All Required Field");
     } else {
         if (check(Coordinate)) {
             var answer = convert(Coordinate)
-            console.log(answer[0]);
-            //call back end
-            $.get("http://localhost:8080/CreateFeature/?value=" + JSON.stringify(answer) + ";" + featureValue)
-                .done(function(data) {
+            if (answer == "false") {
+                getline = document.getElementById('invalidGeojson');
+                getline.style.display = "block"
+                getline.innerHTML = '<p>' + 'Coordinates are missing some  brackets' + '</p>';
+            } else {
+                //call back end
+                $.get("http://localhost:8080/ValidGeoJson/?value=" + JSON.stringify(answer) + ";" + featureValue)
+                    .done(function(data) {
+                        if (data == "True") {
+                            createpastedLayerPoints(answer);
 
-                    if (checked == "polygon") {
+                        } else {
+                            getline = document.getElementById('invalidGeojson');
+                            getline.style.display = "block"
+                            getline.innerHTML = '<p>' + 'InvalidGeojson' + '</p>';
 
-                        createpastedLayerPolygon(data, answer[0])
-                    } else if (checked == "linestring" || checked == "multilinestring") {
-                        createpastedLayerLinsString(data, answer[0])
+                        }
 
-                    } else {
+                    });
+            }
 
-                        createpastedLayerPoints(data, answer[0])
-                    }
-                    // add download button
-
-                });
 
         } else {
             getline = document.getElementById('invalidGeojson');
@@ -603,83 +602,57 @@ $("#loadmap").click(function(event) {
 /* add layerfor pasted geojson for points */
 /* add layerfor pasted geojson for points */
 /* add layerfor pasted geojson for points */
-function createpastedLayerPoints(json, flytocoords) {
+function createpastedLayerPoints(json) {
     paint = getRandomColor();
-    var random = 'Geo'
+    paint1 = getRandomColor();
+    paint2 = getRandomColor();
+    var random = 'GeoSource'
         /* generate a unique layer id */
     var generate = makeid(6, random);
     deleteLayer.push(generate);
+
+    var random3 = 'Geo'
+        /* generate a unique layer id */
+    var generate3 = makeid(6, random3);
+    deleteLayer.push(generate3);
+
+    var random1 = 'Geo'
+        /* generate a unique layer id */
+    var generate1 = makeid(6, random1);
+    deleteLayer.push(generate1);
+
+    var random2 = 'Geo'
+        /* generate a unique layer id */
+    var generate2 = makeid(6, random2);
+    deleteLayer.push(generate2);
+
     map.addSource(generate, {
         'type': 'geojson',
         'data': json
             // poly
     });
     map.addLayer({
-        'id': generate,
+        'id': generate3,
         'source': generate,
         'type': 'circle',
         'paint': {
             'circle-radius': 6,
             'circle-color': paint
-        }
-    });
-    map.flyTo({
-        center: flytocoords,
-        zoom: 5,
-    });
-
-
-}
-
-/* add layerfor pasted geojson for polygon*/
-/* add layerfor pasted geojson for polygon*/
-/* add layerfor pasted geojson for polygon*/
-function createpastedLayerPolygon(json, flytocoords) {
-    // gets a random color
-    paint = getRandomColor();
-    var random = 'Geo'
-        /* generate a unique layer id */
-    var generate = makeid(6, random);
-    deleteLayer.push(generate);
-    map.addSource(generate, {
-        'type': 'geojson',
-        'data': json
-            // poly
+        },
+        'filter': ['==', '$type', 'Point']
     });
     map.addLayer({
-        'id': generate,
+        'id': generate1,
         'type': 'fill',
         'source': generate,
         'paint': {
-            'fill-color': paint,
-            'fill-opacity': 0.2
+            'fill-color': paint1,
+            'fill-opacity': 0.9
         },
         'filter': ['==', '$type', 'Polygon']
     });
-    map.flyTo({
-        center: flytocoords,
-        zoom: 4,
-    });
-
-
-}
-/* add layerfor pasted geojson for lineString*/
-/* add layerfor pasted geojson for lineString*/
-/* add layerfor pasted geojson for lineString*/
-function createpastedLayerLinsString(json, flytocoords) {
-    // gets a random color
-    paint = getRandomColor();
-    var random = 'Geo'
-        /* generate a unique layer id */
-    var generate = makeid(6, random);
-    deleteLayer.push(generate);
-    map.addSource(generate, {
-        'type': 'geojson',
-        'data': json
-            // poly
-    });
     map.addLayer({
-        'id': generate,
+        'id': generate2,
         'type': 'line',
         'source': generate,
         'layout': {
@@ -687,22 +660,27 @@ function createpastedLayerLinsString(json, flytocoords) {
             'line-cap': 'round'
         },
         'paint': {
-            'line-color': paint,
+            'line-color': paint2,
             'line-width': 5
-        }
+        },
+        'filter': ['==', '$type', 'LineString']
     });
-    map.flyTo({
-        center: flytocoords,
-        zoom: 15,
-    });
+    /*   map.flyTo({
+          center: flytocoords,
+          zoom: 5,
+      }); */
 
 
 }
+
+
+
 
 //clear textbox for pasted geojson
 $("#clearpasted").click(function(event) {
     $("#TexrareaGeo").val("");
     $("#featureType").val("");
+    $("input:radio").attr("checked", false);
     getline = document.getElementById('invalidGeojson');
     getline.innerHTML = '<p>'
     '</p>';
@@ -712,21 +690,6 @@ $("#clearpasted").click(function(event) {
 
 
 
-// Start file download.
-
-// function downloadObjectAsJson(exportObj, exportName) {
-//     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-
-//     var downloadAnchorNode = document.createElement('a');
-//     downloadAnchorNode.setAttribute("href", dataStr);
-//     downloadAnchorNode.setAttribute('download', exportName + ".geojson ");
-//     downloadAnchorNode.style.display = 'none';
-//     document.body.appendChild(downloadAnchorNode); // required for firefox
-//     downloadAnchorNode.click();
-//     downloadAnchorNode.remove();
-// }
-// Start file download.
-
 /* returns a list of checked boxes */
 function getSelectedCheckboxValues(boxs) {
     const checkboxes = document.querySelectorAll(`input[name="${boxs}"]:checked`);
@@ -735,6 +698,18 @@ function getSelectedCheckboxValues(boxs) {
     checkboxes.forEach((checkbox) => {
 
         values.push(checkbox.value);
+    });
+
+    return values;
+}
+
+function getSelectedCheckboxid(boxs) {
+    const checkboxes = document.querySelectorAll(`input[name="${boxs}"]:checked`);
+
+    let values = [];
+    checkboxes.forEach((checkbox) => {
+
+        values.push(checkbox.id);
     });
 
     return values;
@@ -754,7 +729,7 @@ window.onload = function() {
     const btns = document.querySelector('#clearcheckbox');
     btns.addEventListener('click', (event) => {
         var list = [];
-        list = getSelectedCheckboxValues('boxs')
+        list = getSelectedCheckboxid('boxs')
         for (i = 0; i < list.length; i++) {
             document.getElementById(list[i]).checked = false;
         }
@@ -767,25 +742,57 @@ window.onload = function() {
 map that need to be deleted */
 
 function removelayers(layer) {
-    var afterdellete = []
+    var afterdellete = [];
+    var surceid = 'GeoSource';
+    var contain = '';
+    var sourcetobedeleted = '';
+    if (layer == "Geo") {
+        for (i = 0; i < deleteLayer.length; i++) {
+            var contain = deleteLayer[i];
+            if (contain.includes(surceid)) {
+                sourcetobedeleted = contain
+
+            } else if (contain.includes(layer)) {
+                afterdellete.push(contain);
+                if (map.getLayer(contain)) {
+                    map.removeLayer(contain);
+                }
+
+            }
+
+        }
+        map.removeSource(sourcetobedeleted);
+        afterdellete.push(sourcetobedeleted);
+
+
+    } else {
+
         /*  deletes the layer that has been selcted to be 
         deleted from the map */
-    for (i = 0; i < deleteLayer.length; i++) {
-        var contain = deleteLayer[i];
+        for (i = 0; i < deleteLayer.length; i++) {
+            var contain = deleteLayer[i];
 
-        if (contain.includes(layer)) {
-            afterdellete.push(contain);
-            map.removeLayer(contain);
-            map.removeSource(contain);
+            if (contain.includes(layer)) {
+                afterdellete.push(contain);
+                /*  map.removeLayer(contain);
+                 */
+                if (map.getLayer(contain)) {
+                    map.removeLayer(contain);
+                    map.removeSource(contain);
+                }
+
+            }
+
+        }
+        /* removes all the deleted layer from the array */
+        for (i = 0; i < afterdellete.length; i++) {
+            if (deleteLayer.includes(afterdellete[i])) {
+                const index = deleteLayer.indexOf(afterdellete[i]);
+                deleteLayer.splice(index, 1)
+            }
         }
     }
-    /* removes all the deleted layer from the array */
-    for (i = 0; i < afterdellete.length; i++) {
-        if (deleteLayer.includes(afterdellete[i])) {
-            const index = deleteLayer.indexOf(afterdellete[i]);
-            deleteLayer.splice(index, 1)
-        }
-    }
+
 }
 //draw tool
 //draw tool
