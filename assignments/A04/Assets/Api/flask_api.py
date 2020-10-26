@@ -370,25 +370,6 @@ def getRoutes():
     return "<pre>"+response+"</pre>"
 
 
-@app.route('/geo/direction/')
-def get_direction():
-    """ Description: Return the direction between two lat/lon points.
-        Params: 
-            lng1 (float) : point 1 lng
-            lat1 (float) : point 1 lat
-            lng2 (float) : point 1 lat
-            lat2 (float) : point 1 lat
-
-        Example: http://localhost:8080/geo/direction/?lng1=-98.4035194716&lat1=33.934640760&lng2=-98.245591004&lat2=34.0132220288
-    """
-    lng1 = request.args.get('lng1', None)
-    lat1 = request.args.get('lat1', None)
-    lng2 = request.args.get('lng2', None)
-    lat2 = request.args.get('lat2', None)
-
-    b = bearing((float(lng1), float(lat1)), (float(lng2), float(lat2)))
-
-    return handle_response([{"bearing": b}], {'lat1': lat1, 'lng1': lng1, 'lat2': lat2, 'lng2': lng2})
 
 
 @app.route('/nearestNeighbors/')
@@ -478,31 +459,6 @@ def states():
     return handle_response(results)
 
 
-@app.route('/state_bbox/', methods=["GET"])
-def state_bbox():
-    """ Description: return a bounding box for a us state
-        Params: 
-            None
-        Example: http://localhost:8080/state_bbox/<statename>
-    """
-    state = request.args.get('state', None)
-
-    if not state:
-        results = STATE_BBOXS
-        return handle_response(results)
-
-    state = state.lower()
-
-    results = []
-    for row in STATE_BBOXS:
-        if row['name'].lower() == state or row['abbr'].lower() == state:
-            row['xmax'] = float(row['xmax'])
-            row['xmin'] = float(row['xmin'])
-            row['ymin'] = float(row['ymin'])
-            row['ymax'] = float(row['ymax'])
-            results = row
-
-    return handle_response(results)
 
 
 @app.route('/StatesRailroad/', methods=["GET"])
