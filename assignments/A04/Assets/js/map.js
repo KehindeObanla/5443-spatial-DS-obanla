@@ -200,7 +200,8 @@ $('#findNearest').click(function() {
         });
 
     map.flyTo({
-        center: [enterLng, enterLat]
+        center: [enterLng, enterLat],
+        zoom: 8
     });
 
 
@@ -363,7 +364,7 @@ function addLayer(lng, lat, lng1, lat1) {
     });
     map.flyTo({
         center: [lng, lat],
-        zoom: 3
+        zoom: 4
 
     });
 }
@@ -493,7 +494,7 @@ function addLayer1(json) {
     });
     map.flyTo({
         center: [enterLng, enterLat],
-        zoom: 4
+        zoom: 7
     });
 }
 //read user input and populate states with
@@ -581,6 +582,7 @@ $("#loadmap").click(function(event) {
                 //call back end
                 $.get("http://localhost:8080/ValidGeoJson/?value=" + JSON.stringify(answer) + ";" + featureValue)
                     .done(function(data) {
+
                         if (data == "True") {
                             createpastedLayerPoints(answer);
 
@@ -612,6 +614,7 @@ function createpastedLayerPoints(json) {
     paint = getRandomColor();
     paint1 = getRandomColor();
     paint2 = getRandomColor();
+
     var random = 'GeoSource'
         /* generate a unique layer id */
     var generate = makeid(6, random);
@@ -631,6 +634,7 @@ function createpastedLayerPoints(json) {
         /* generate a unique layer id */
     var generate2 = makeid(6, random2);
     deleteLayer.push(generate2);
+
 
     map.addSource(generate, {
         'type': 'geojson',
@@ -671,6 +675,7 @@ function createpastedLayerPoints(json) {
         },
         'filter': ['==', '$type', 'LineString']
     });
+
     /*   map.flyTo({
           center: flytocoords,
           zoom: 5,
@@ -696,7 +701,7 @@ $("#clearpasted").click(function(event) {
 
 
 
-/* returns a list of checked boxes */
+/* returns a list of checked boxes values */
 function getSelectedCheckboxValues(boxs) {
     const checkboxes = document.querySelectorAll(`input[name="${boxs}"]:checked`);
 
@@ -708,7 +713,7 @@ function getSelectedCheckboxValues(boxs) {
 
     return values;
 }
-
+/* returns a list of checked boxes ids */
 function getSelectedCheckboxid(boxs) {
     const checkboxes = document.querySelectorAll(`input[name="${boxs}"]:checked`);
 
@@ -821,17 +826,17 @@ and creates a layer */
 function updateArea(e) {
     paint = getRandomColor();
     var data = drawmodal.getAll();
-    var coords = turf.meta.coordAll(data);
-    var line = turf.lineString(coords);
-    var bbox = turf.bbox(line);
+    var cooedinatesofdrawn = turf.meta.coordAll(data);
+    var CreateLineString = turf.lineString(cooedinatesofdrawn);
+    var boundingBox = turf.bbox(CreateLineString);
     var random = 'DrawL'
     var generate = makeid(6, random);
 
     deleteLayer.push(generate);
-    var poly = turf.bboxPolygon(bbox);
-
+    //creates a bounding box around the drawn polygon
+    var poly = turf.bboxPolygon(boundingBox);
     boundingBoxPolygon(poly)
-    $.getJSON("http://localhost:8080/interSection/?lngLat=" + bbox)
+    $.getJSON("http://localhost:8080/interSection/?lngLat=" + boundingBox)
         .done(function(json) {
             map.addSource(generate, {
                 'type': 'geojson',
@@ -848,7 +853,7 @@ function updateArea(e) {
                 }
             });
             map.flyTo({
-                center: coords[0],
+                center: cooedinatesofdrawn[0],
                 zoom: 5,
             });
 

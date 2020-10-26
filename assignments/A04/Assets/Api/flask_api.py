@@ -132,7 +132,7 @@ def build_index():
     del eqks[400:840]
     count = 0
     bad = 0
-    earthquakeUniqueid = {}
+    uniqueueEarthhquakeid = {}
 
     for efile in eqks:
         minlat = 999
@@ -148,7 +148,7 @@ def build_index():
             if validateJSON(row):
                 row = json.loads(row)
                 lng, lat, _ = row["geometry"]["coordinates"]
-                earthquakeUniqueid[count] = row
+                uniqueueEarthhquakeid[count] = row
                 if lng < minlng:
                     minlng = lng
                 if lat < minlat:
@@ -164,7 +164,7 @@ def build_index():
             else:
                 bad += 1
        
-    return idx, earthquakeUniqueid
+    return idx, uniqueueEarthhquakeid
 
  # returns a list of nearest neigh
 
@@ -175,26 +175,26 @@ def nearestNeighbors(lng, lat):
         "features": []
     }
     left, bottom, right, top = point_to_bbox(lng, lat)
-    nearest = list(idx.nearest((left, bottom, right, top), 5))
-    nearestlist = []
+    nearestearthquakes = list(idx.nearest((left, bottom, right, top), 5))
+    nearestearthquakeslist = []
     # for each id get all other properties from
     # rtee and add it to a list
 
-    for item in nearest:
-        nearestlist.append({
+    for item in nearestearthquakes:
+        nearestearthquakeslist.append({
             'type': 'Feature',
             'geometry': rtreeid[item]['geometry'],
             'properties': rtreeid[item]['properties']
         })
     
-   # add nearestlist to a dictionary
+   # add nearestearthquakeslist to a dictionary
    # to make it a geojson file
-    answer_Collection['features'] = nearestlist
+    answer_Collection['features'] = nearestearthquakeslist
     # convert into JSON:
-    convertedGeojson = json.dumps(answer_Collection)
+    convertedtoProperGeojson = json.dumps(answer_Collection)
     # the result is a JSON string:
     # to be used as id in the frontend
-    return convertedGeojson
+    return convertedtoProperGeojson
 """ retruns a geojson that includes the
 latlng in a within a bounding box """
 def intersection(left,bottom,right,top):
@@ -214,16 +214,16 @@ def intersection(left,bottom,right,top):
         intersectid.append(ids.id)
     intersectid = list(dict.fromkeys(intersectid))    
     
-    nearestlist = []
+    withinboundinboxlist = []
     for item in intersectid:
-        nearestlist.append({
+        withinboundinboxlist.append({
             'type': 'Feature',
             'geometry': rtreeid[item]['geometry'],
             'properties': rtreeid[item]['properties']
         })
     # add nearestlist to a dictionary
     # to make it a geojson file
-    answer_Collection['features'] = nearestlist
+    answer_Collection['features'] = withinboundinboxlist
     # convert into JSON:
     convertedGeojson = json.dumps(answer_Collection)
     # the result is a JSON string:
@@ -253,41 +253,60 @@ def checkgeojson(dic,value,key ="type"):
 """ checks a valid feature geojson """
 def checkfeature(dic):
     featuretype =["Point", "LineString", "Polygon", "MultiPoint", "MultiLineString","MultiPolygon"]
+    propertyflag = False
     count = 0
+    if("type" not in dic):
+        count-=1
+    if("geometry" not in dic):
+        count-=1
     for key, value in dic.items() :
+      
         if(key =="type" and value == "Feature"):
-           
             count+=1
-        if(key =="geometry" and isinstance(value ,dict)):
-           
+        elif(key =="geometry" and isinstance(value ,dict)):
             count+=1
+            
+            if("type" not in value):
+                count-=1
+            if("coordinates" not in value):
+                count-=1
             for key, value in value.items() :
-                if(key == "type" and value in featuretype):
-                  
-                    count+=1
+               
+                if(key == "type"and value  not in featuretype):
+                    count-=1
                 if(key =="coordinates"and isinstance(value ,list)):
-                 
                     count+=1
-        if(key =="properties" and isinstance(value ,dict)):
+       
+        elif(key =="properties" and isinstance(value ,dict)):
+            propertyflag=True
             count+=1
     
-    if(count >=4 and count < 6):
+    if(count ==4 and propertyflag == True):
+        return True
+    elif(count ==3 and propertyflag == False):
         return True
     else:
         return False
+    
 """ checks a valid featurecollection geojson """
 def checkFeatureCollection(dic):
+    flag = False
     count =0
+    if("type" not in dic):
+        count-=1
     for key, value in dic.items() :
         if(key =="type" and value == "FeatureCollection"):
             count+=1
-        if(key =="features" and isinstance(value[0] ,dict)):
-            count+=1
-            for feature in value:
-                flag = checkfeature(feature)
-            if(flag == True):
-                return True
-    return False
+        if(key =="features"):
+            if(isinstance(value,list)):
+                
+                for feat in value:
+                    flag = checkfeature(feat)
+                    if (flag == False):
+                        return False
+    if(flag == True and count == 1):
+        return True
+   
 
         
 
