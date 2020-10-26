@@ -548,13 +548,13 @@ function check(expr) {
 function convert(str) {
     //replaces the single qoutes with double qoutes
     str = str.replace(/'/g, '"')
-    var tojson = JSON.parse(str);
-    if (typeof tojson === "object") {
-
-        return tojson;
-    } else {
+    try {
+        var tojson = JSON.parse(str);
+    } catch (e) {
         return "false"
     }
+    return tojson;
+
 }
 //onclick call addeojsonlayer
 $("#loadmap").click(function(event) {
@@ -573,11 +573,10 @@ $("#loadmap").click(function(event) {
     } else {
         if (check(Coordinate)) {
             var answer = convert(Coordinate)
-
             if (answer == "false") {
                 getline = document.getElementById('invalidGeojson');
                 getline.style.display = "block"
-                getline.innerHTML = '<p>' + 'Coordinates are missing some  brackets' + '</p>';
+                getline.innerHTML = '<p>' + 'cannot parse geojson file' + '</p>';
             } else {
                 //call back end
                 $.get("http://localhost:8080/ValidGeoJson/?value=" + JSON.stringify(answer) + ";" + featureValue)
