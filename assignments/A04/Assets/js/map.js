@@ -599,7 +599,7 @@ $("#loadmap").click(function(event) {
         } else {
             getline = document.getElementById('invalidGeojson');
             getline.style.display = "block"
-            getline.innerHTML = '<p>' + 'Coordinates are missing some  brackets' + '</p>';
+            getline.innerHTML = '<p>' + 'geojson is  missing some brackets ' + ' < /p>';
         }
 
 
