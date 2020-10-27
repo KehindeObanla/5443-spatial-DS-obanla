@@ -123,6 +123,7 @@ map.on('load', function() {
 //random string generator
 //random string generator
 //random string generator
+/*https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
 function makeid(length, uniqueue) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -135,6 +136,7 @@ function makeid(length, uniqueue) {
     }
     return result;
 }
+/* https://stackoverflow.com/questions/1484506/random-color-generator */
 /* random color generator */
 /* random color generator */
 /* random color generator */
@@ -328,10 +330,18 @@ $("#searchCity").click(function(event) {
 //layer
 function addLayer(lng, lat, lng1, lat1) {
     paint = getRandomColor();
+    paint1 = getRandomColor();
     /* generate a unique layer id */
-    var random = 'route'
+    var random = 'routeSource'
     var generate = makeid(6, random);
-    deleteLayer.push(generate)
+    //add points layer
+    var random1 = 'route'
+    var generate1 = makeid(6, random1);
+    var random2 = 'route'
+    var generate2 = makeid(6, random2);
+    deleteLayer.push(generate);
+    deleteLayer.push(generate1);
+    deleteLayer.push(generate2);
     map.addSource(generate, {
         'type': 'geojson',
         'data': {
@@ -348,7 +358,7 @@ function addLayer(lng, lat, lng1, lat1) {
     });
 
     map.addLayer({
-        'id': generate,
+        'id': generate1,
         'type': 'line',
         'source': generate,
         'layout': {
@@ -361,6 +371,15 @@ function addLayer(lng, lat, lng1, lat1) {
         }
 
 
+    });
+    map.addLayer({
+        'id': generate2,
+        'source': generate,
+        'type': 'circle',
+        'paint': {
+            'circle-radius': 6,
+            'circle-color': paint1
+        }
     });
     map.flyTo({
         center: [lng, lat],
@@ -525,6 +544,7 @@ function populateStatesSelect() {
 
 
 //validate brackets
+/* https://stackoverflow.com/questions/52969755/how-to-check-the-sequence-of-opening-and-closing-brackets-in-string */
 function check(expr) {
     const holder = []
     const openBrackets = ['(', '{', '[']
@@ -599,7 +619,7 @@ $("#loadmap").click(function(event) {
         } else {
             getline = document.getElementById('invalidGeojson');
             getline.style.display = "block"
-            getline.innerHTML = '<p>' + 'geojson is  missing some brackets ' + ' < /p>';
+            getline.innerHTML = '<p>' + 'geojson is  missing some brackets' + ' < /p>';
         }
 
 
@@ -754,8 +774,10 @@ map that need to be deleted */
 function removelayers(layer) {
     var afterdellete = [];
     var surceid = 'GeoSource';
+    var sourceidRoute = 'routeSource';
     var contain = '';
     var sourcetobedeleted = '';
+    var sourcetobedeleted2 = '';
     if (layer == "Geo") {
         for (i = 0; i < deleteLayer.length; i++) {
             var contain = deleteLayer[i];
@@ -773,6 +795,25 @@ function removelayers(layer) {
         }
         map.removeSource(sourcetobedeleted);
         afterdellete.push(sourcetobedeleted);
+
+
+    } else if (layer == 'route') {
+        for (i = 0; i < deleteLayer.length; i++) {
+            var contain = deleteLayer[i];
+            if (contain.includes(sourceidRoute)) {
+                sourcetobedeleted2 = contain
+
+            } else if (contain.includes(layer)) {
+                afterdellete.push(contain);
+                if (map.getLayer(contain)) {
+                    map.removeLayer(contain);
+                }
+
+            }
+
+        }
+        map.removeSource(sourcetobedeleted2);
+        afterdellete.push(sourcetobedeleted2);
 
 
     } else {
@@ -907,9 +948,7 @@ map.on(touchEvent, function(e) {
         JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
     document.getElementById('latlngonclick').innerHTML =
         JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
-        // create json to store
-        // create json to store
-        // create json to store
+
 
 });
 
