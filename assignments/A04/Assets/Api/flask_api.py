@@ -11,6 +11,10 @@ import glob
 import json
 import math
 import re
+import networkx as nx
+import matplotlib.pyplot as plt
+from shapely.geometry import LineString
+from shapely.geometry import Point
 
 
 app = Flask(__name__)
@@ -99,7 +103,7 @@ def load_data(path):
     _, ftype = os.path.splitext(path)   # get fname (_), and extenstion (ftype)
 
     if os.path.isfile(path):            # is it a real file?
-        with open(path) as f:
+        with open(path,'r', encoding='utf-8') as f:
 
             if ftype == ".json" or ftype == ".geojson":  # handle json
                 data = f.read()
@@ -126,9 +130,8 @@ def point_to_bbox(lng, lat, offset=.001):
     return (float(lng-offset), float(lat-offset), float(lng+offset), float(lat+offset))
 
 """ loads rtee """
-def build_index():
-    eqks = glob.glob(
-        "assignments\\A04\\Assets\\json\\earthquake_data\\earthquakes\\*.json")
+def build_index(path):
+    eqks = glob.glob(path)
     del eqks[400:840]
     count = 0
     bad = 0
@@ -229,7 +232,6 @@ def intersection(left,bottom,right,top):
     # the result is a JSON string:
     # to be used as id in the frontend
     return convertedGeojson
-
 """ checks a valid geojson """
 def checkgeojson(dic,value,key ="type"):
         answer ="True"
@@ -306,7 +308,91 @@ def checkFeatureCollection(dic):
                         return False
     if(flag == True and count == 1):
         return True
+""" build rtree for primary roads """
+def build_indexPrima(path):
+    uniqueueRoadid = {}
+    count =0
+    data = load_data(path)
+    feature = data['features']
+    for row in feature:
+        resultlist= row["geometry"]["coordinates"]
+        uniqueueRoadid[count] = row
+        coords = LineString(resultlist[0])
+        left,right,bottom, top = coords.bounds
+        idx2.insert(count, (left,right,bottom, top))
+        count+=1
+    return idx2, uniqueueRoadid 
    
+
+def nearestNeighborsRoads(lng, lat):
+    coords = Point((lng,lat))
+    left,right,bottom, top = coords.bounds
+    nearest = list(idx2.nearest((left,right,bottom, top), 1))
+    
+    nearestlist = []
+    for item in nearest:
+        coords = rtreeroadid[item]['geometry']["coordinates"]
+        listed = coords[0]
+        nearestlist.append(listed[0])
+  
+    return nearestlist
+def creategraphwithcities(Graph,path):
+    data = load_data(path)
+    feature = data['features']
+    for row in feature:
+        resultlist= tuple(row["geometry"]["coordinates"])
+        
+        lng = resultlist[1]
+        lat = resultlist[0]
+        another = (lng,lat)
+        
+        Graph.add_node(another)
+    return Graph
+
+def withinbox(lng,lat):
+   
+    top = 71.3577635769 # north lat
+    left = -171.791110603 # west long
+    right = -66.96466 # east long
+    bottom =  18.91619 # south lat
+    """ Accepts a list of lat/lng tuples. 
+        returns the list of tuples that are within the bounding box for the US.
+        NB. THESE ARE NOT NECESSARILY WITHIN THE US BORDERS!
+    """
+    flag = False
+    
+    if bottom <= lat <= top and left <= lng <= right:
+        flag = True
+        
+    
+    return flag
+
+def findclosestRoad(path,Graph):
+    data = load_data(path)
+    count =0
+    feature = data['features']
+    for row in feature:
+        """ resultlist= row["geometry"]["coordinates"] """
+        result = row["properties"]       
+        count+=1
+        lng = result["LONGITUDE"]
+        lat = result["LATITUDE"]
+        
+        if(withinbox(lng,lat)):
+            anotherlist = (lng,lat)
+            lnglat = nearestNeighborsRoads(lng,lat)
+            length = len(lnglat)
+            if length ==2:
+            
+                createedge = tuple(lnglat[1])
+                Graph.add_edge(anotherlist,createedge)
+                
+            else:
+                createedge = tuple(lnglat[0])
+                Graph.add_edge(anotherlist,createedge)
+    print("done")
+    return Graph
+                
 
         
 
@@ -330,8 +416,17 @@ STATE_BBOXS = load_data(
 CITIES = load_data(
     "assignments\\A04\\assets\\json\\countries_states\\major_cities.geojson")
 EQK = glob.glob("assignments\\A04\\assets\\json\\us_railroads\\*.geojson")
+roadgeojsonpath = "assignments\\A04\\assets\\json\\Primary_Roads.geojson\\Primary_Roads.geojson"
 idx = index.Index()
-idx, rtreeid= build_index()
+idx2 = index.Index()
+eqrthquakepath = "assignments\\A04\\Assets\\json\\earthquake_data\\earthquakes\\*.json"
+idx, rtreeid= build_index(eqrthquakepath)
+idx2, rtreeroadid = build_indexPrima(roadgeojsonpath)
+majorRoadsRelative ="assignments\\A04\\assets\\json\\shapefile\\primaryroadshap.shp"
+cities ='assignments\\A04\\assets\\json\\ne_10m_populated_places\\populatedplacesgeo.geojson'
+shapefileToGraph = nx.read_shp(majorRoadsRelative,simplify=True,geom_attrs=True,strict=True)
+G2 = shapefileToGraph.to_undirected(reciprocal=False, as_view=True)
+
 """
    ____   ___  _   _ _____ _____ ____  
   |  _ \ / _ \| | | |_   _| ____/ ___| 
@@ -528,6 +623,40 @@ def Create():
     featureorFC = parts[1]
     return checkgeojson(send,featureorFC)
 
-
+@app.route('/Travel/', methods=["GET"])
+def Travel():
+    """ Description: returns a geojson of rail roads given a state name
+        Params: 
+            None
+        Example: http://localhost:8080/Travel/?lnglat=
+    """
+    answer_Collection = {
+        "type": "FeatureCollection",
+        "features": [ ]
+    }
+    results = []
+    lng, lat, lng1, lat1 = request.args.get('lnglat', None).split(",")
+    checkformiORkm = request.args.get('lnglat', None).split(";")
+    lng, lat, lng1, lat1 = checkformiORkm[0].split(",")
+    lnglat = nearestNeighborsRoads(float(lng), float(lat))
+    lnglat1 = nearestNeighborsRoads(float(lng1), float(lat1))
+    path = nx.shortest_path(G2, source = tuple(lnglat[0]), target = tuple(lnglat1[0]), weight = None, method = 'dijkstra')
+    if isinstance(path, list):
+        for point in path:
+            results.append(list(point))
+        answer_Collection["features"].append({"type":"Feature",
+          "properties": {},
+            "geometry":
+            {
+            "type": "LineString",
+            "coordinates": results
+            }})
+        convertedGeojson = json.dumps(answer_Collection)
+        with open('data.json', 'w') as outfile:
+            json.dump(answer_Collection, outfile)
+        return convertedGeojson
+    else:
+        answer = path
+    return answer
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

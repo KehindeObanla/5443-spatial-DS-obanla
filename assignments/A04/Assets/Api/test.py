@@ -12,8 +12,20 @@ import json
 import math
 from rtree import index
 import random
+import networkx as nx
+import matplotlib.pyplot as plt
+from networkx.utils import open_file
+from decimal import Decimal
+from networkx.algorithms import tree
+from shapely.geometry import LineString
+from shapely.geometry import Point
 
 idx = index.Index()
+idx2 = index.Index()
+pathRoad ='assignments\\A04\\assets\\json\\Primary_Roads.geojson\\Primary_Roads.geojson'
+
+
+
 def finddistance():
     """ Description: return a distance between two points
         Params:
@@ -33,11 +45,13 @@ def load_data(path):
     _, ftype = os.path.splitext(path)   # get fname (_), and extenstion (ftype)
 
     if os.path.isfile(path):            # is it a real file?
-        with open(path) as f:
+        with open(path, 'r', encoding='utf-8') as f:
 
             if ftype == ".json" or ftype == ".geojson":  # handle json
                 data = f.read()
+                print(type(data))
                 if isJson(data):
+                    print(type(data))
                     return json.loads(data)
 
             elif ftype == ".csv":       # handle csv with csv reader
@@ -55,53 +69,39 @@ def isJson(data):
     except ValueError:
         return False
 
+def buildLineStringRtree(path):
+    uniqueueRoadid = {}
+    count =0
+    data = load_data(path)
+    feature = data['features']
+    print(len(feature))
+    for row in feature:
+        resultlist= row["geometry"]["coordinates"]
+        uniqueueRoadid[count] = row
+        coords = LineString(resultlist[0])
+        left,right,bottom, top = coords.bounds
+        idx2.insert(count, (left,right,bottom, top))
+        count+=1
+    print(len(uniqueueRoadid))
+    print(count)
+    return idx2, uniqueueRoadid
 
-CITIES = load_data(
+
+""" CITIES = load_data(
     "assignments\\A04\\assets\\json\\countries_states\\major_cities.geojson")
 STATES = load_data(
-    "assignments\\A04\\assets\\json\\countries_states\\states.json")
-
-
-def cities():
-    """ Description: return a list of US state names
-        Params:
-            None
-        Example: http://localhost:8080/cities
-    """
-    """ filter = request.args.get('filter',None) """
-    results = []
-
-    for city in CITIES["features"]:
-        answers = {
-            "Name": city["properties"]["name"],
-            "Coordinates": city["geometry"]["coordinates"]
-        }
-        results.append(answers)
-    print(results[0])
-
-
-def sub():
-    filter = ''
-    results = []
-    if (filter):
-
-        for city in CITIES["features"]:
-            if filter.lower() == city["properties"]["name"].lower():
-                answers = {
-                    "Name": city["properties"]["name"],
-                    "Coordinates": city["geometry"]["coordinates"]
-                }
-                results.append(answers)
-    else:
-        for city in CITIES["features"]:
-            answers = {
-                "Name": city["properties"]["name"],
-                "Coordinates": city["geometry"]["coordinates"]
-            }
-            results.append(answers)
-    print(results[0])
-    return handle_response(results)
-
+    "assignments\\A04\\assets\\json\\countries_states\\states.json") """
+NE_10m_roads ="assignments\\A04\\assets\\json\\ne_10m_roads_north_america\\newroad.shp"
+NE_10m_roadsGeo ="assignments\\A04\\assets\\json\\ne_10m_roads_north_america\\newroadgeo.geojson"
+populatedPlacespath = "assignments\\A04\\assets\\json\\ne_10m_populated_places\\populatedplacesgeo.geojson"
+createdGraph ="assignments\\A04\\assets\\output"
+primaryroads = "assignments\\A04\\assets\\json\\shapefile\\primaryroadshap.shp"
+primaryroadsGeojson ="assignments\\A04\\assets\\json\Primary_Roads.geojson\\Primary_Roads.geojson"
+""" shape file to graph """
+shapefileToGraph = nx.read_shp(NE_10m_roads,simplify=True,geom_attrs=True,strict=False)
+G2 = shapefileToGraph.to_undirected()
+path2 ="assignments\\A04\\assets\\json\\mst"
+idx2,rtreeroadid =buildLineStringRtree(NE_10m_roadsGeo)
 
 def handle_response(data, params=None, error=None):
     """ handle_response
@@ -124,91 +124,7 @@ def handle_response(data, params=None, error=None):
 
     return (jsonify(result))
 
-
-def states():
-    """ Description: return a list of US state names
-        Params:
-            None
-        Example: http://localhost:8080/states?filter=mis
-    """
-    filter = "texas"
-
-    if filter:
-        results = []
-        for state in STATES:
-            if filter.lower() == state['name'][:len(filter)].lower():
-                results.append(state)
-                print(state)
-    else:
-        results = STATES
-
-
-def railroad2():
-    answer_Collection = {
-        "type": "Feature",
-        "features": [],
-       " properties": {},
-        "geometry": {
-        "type": "LineString",
-        "coordinates": None
-        }
-    }
-    """ filter = request.args.get('state', None) """
-    state = "North Carolina"
-    state = state.lower()
-    results = []
-    eqks = glob.glob("assignments\\A04\\assets\\json\\us_railroads\\*.geojson")
-    for efile in eqks:
-
-        with open(efile, 'r', encoding='utf-8') as f:
-            data = f.read()
-            convertedGeojson = json.loads(data)
-            for rail in convertedGeojson["features"]:
-                statesinRail = rail["properties"]["states"]
-                statesinRail = [item.lower() for item in statesinRail]
-                if(state in statesinRail):
-                    for coord in rail["geometry"]["coordinates"]:
-                        results.append(coord)
-           
-            answer_Collection["geometry"]["coordinates"] = results
-    for key, value in answer_Collection.items() :
-        print (key)
-   
-
-
-def railroad():
-    """ Description: return a list of US state names
-                     with railroads
-        Params: 
-            None
-        Example: http://localhost:8080/railroad?filter=mis
-    """
-
-    filter = None
-    results = []
-    count = 0
-    eqks = glob.glob("assignments\\A04\\assets\\json\\us_railroads\\*.geojson")
-    for efile in eqks:
-
-        with open(efile, 'r', encoding='utf-8') as f:
-            data = f.read()
-            convertedGeojson = json.loads(data)
-            if(filter):
-                for rail in convertedGeojson["features"]:
-                    statesinRail = rail["properties"]["states"]
-                    for state in statesinRail:
-                        if filter.lower() == state[:len(filter)].lower():
-                            results.append(state)
-            else:
-
-                for rail in convertedGeojson["features"]:
-                    count += 1
-                    statesinRail = rail["properties"]["states"]
-                    for state in statesinRail:
-                        results.append(state)
-    mylist = list(dict.fromkeys(results))
-    print(mylist)
-    print(count)
+  
 def validateJSON(jsonData):
     try:
         json.loads(jsonData)
@@ -283,7 +199,7 @@ def nearestNeighbors(lng, lat):
     idx, rtreeid = build_index()
     left, bottom, right, top = point_to_bbox(lng, lat)
     nearest = list(idx.nearest((left, bottom, right, top), 2))
-    print(nearest)
+    """ print(nearest) """
     nearestlist = []
 
     dic ={}
@@ -309,18 +225,18 @@ def nearestNeighbors(lng, lat):
                 
     for item in answer_CollectionpolyGon['features']:
         item['geometry']['coordinates'].append( polygon)
-    print( answer_CollectionpolyGon)
+    """ print( answer_CollectionpolyGon) """
    # add nearestlist to a dictionary
    # to make it a geojson file
     answer_Collection['features'] = nearestlist
     # convert into JSON:
     convertedGeojson = json.dumps(answer_CollectionpolyGon)
-    print( convertedGeojson)
+    """ print( convertedGeojson) """
     # the result is a JSON string:
     # to be used as id in the frontend
 def intersection(left,bottom,right,top):
   
-    print(type( left))
+    """ print(type( left)) """
    
     answer_Collection = {
         "type": "FeatureCollection",
@@ -365,9 +281,8 @@ def inboundingBox(x1, y1, x2,y2, x, y) :
 
 
 
-def randomcolorgenerator():
     r = lambda: random.randint(0,255)
-    print('#%02X%02X%02X' % (r(),r(),r()))
+    """ print('#%02X%02X%02X' % (r(),r(),r())) """
     
 def checkgeojson():
     json ={
@@ -380,9 +295,154 @@ def checkgeojson():
     "name": "Dinagat Islands"
   }
 } 
-  
 
 
+
+def nearestNeighborsRoads(lng,lat):
+    coords = Point((lng,lat))
+    left,right,bottom, top = coords.bounds
+    nearest = list(idx2.nearest((left,right,bottom, top), 1))
+    
+    nearestlist = []
+    for item in nearest:
+        coords = rtreeroadid[item]['geometry']["coordinates"]
+        listed = coords[0]
+        nearestlist.append(listed[0])
+    
+    return nearestlist
+
+def Travel(lng,lat,lng1,lat1,Graph):
+    results = []
+    answer_Collection = {
+        "type": "FeatureCollection",
+        "features": [ ]
+    }
+    lnglat = nearestNeighborsRoads(lng,lat)
+    lnglat1 = nearestNeighborsRoads(lng1,lat1)
+    print("nearest1")
+    print(lnglat[0])
+    print("nearest 2")
+    print(lnglat1[0])
+    path = nx.shortest_path(Graph, source = tuple(lnglat[0]), target = tuple(lnglat1[0]),weight = None, method = 'dijkstra')
+    """ print(type(path)) """
+    if isinstance(path, list):
+        for point in path:
+            results.append(list(point))
+        """ print("did") """
+        answer_Collection["features"].append({"type":"Feature",
+          "properties": {},
+            "geometry":
+            {
+            "type": "LineString",
+            "coordinates": results
+            }})
+        """ print("done") """
+        convertedGeojson = json.dumps(answer_Collection)
+        with open('data.json', 'w') as outfile:
+            json.dump(answer_Collection, outfile)
+        return convertedGeojson
+    else:
+        answer = (path)
+    return(answer)
+
+
+
+def creategraphwithcities(Graph,path):
+    data = load_data(path)
+    feature = data['features']
+    for row in feature:
+        resultlist= tuple(row["geometry"]["coordinates"])
+        
+        lng = resultlist[1]
+        lat = resultlist[0]
+        another = (lng,lat)
+        
+        Graph.add_node(another)
+    return Graph
+
+def withinbox(lng,lat):
+   
+    top = 71.3577635769 # north lat
+    left = -171.791110603 # west long
+    right = -66.96466 # east long
+    bottom =  18.91619 # south lat
+    """ Accepts a list of lat/lng tuples. 
+        returns the list of tuples that are within the bounding box for the US.
+        NB. THESE ARE NOT NECESSARILY WITHIN THE US BORDERS!
+    """
+    flag = False
+    
+    if bottom <= lat <= top and left <= lng <= right:
+        flag = True
+        
+    
+    return flag
+
+def findclosestRoad(path,Graph):
+    data = load_data(path)
+    count =0
+    feature = data['features']
+    for row in feature:
+        """ resultlist= row["geometry"]["coordinates"] """
+        result = row["properties"]       
+        count+=1
+        lng = result["LONGITUDE"]
+        lat = result["LATITUDE"]
+        
+        if(withinbox(lng,lat)):
+            anotherlist = (lng,lat)
+            lnglat = nearestNeighborsRoads(lng,lat)
+            length = len(lnglat)
+            if length ==2:
+            
+                createedge = tuple(lnglat[1])
+                Graph.add_edge(anotherlist,createedge)
+                
+            else:
+                createedge = tuple(lnglat[0])
+                Graph.add_edge(anotherlist,createedge)
+    print("done")
+    return Graph
+                
+    
+def AddnewNodeToGraph():
+    """ graphwithcities = creategraphwithcities(G2,populatedPlacespath)
+    answer = findclosestRoad(populatedPlacespath,graphwithcities)
+    G3 = answer.to_undirected() """
+    
+
+def FindBouningBox(path):
+    data = load_data(path)
+    feature = data['features']
+    for row in feature:
+        resultlist= row["geometry"]["coordinates"]
+        for coord in resultlist:
+            cood = coord[0]
+            """ print(cood) """
+            break
+        break
+
+        
+        
+   
 if __name__ == '__main__':
+    Travel(-78.0199,36.6796,-80.4969,34.8252,G2)
+   
+    
+    
+    
+    
+    
+   
+    
+    
+    
+    
+ 
+   
 
-   checkgeojson()
+    
+   
+    
+   
+   

@@ -34,6 +34,7 @@
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css' rel='stylesheet' />
 
+
     <!-- Turf -->
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
 
@@ -246,9 +247,10 @@
                         <!-- Search Button -->
                         <a class="clickable" data-toggle="modal" data-target="#searchModal" title="Search Layer Attributes"><i class="fa fa-fw fa-search"></i></a>
                     </li>
-
-
-
+                    <li>
+                        <!-- Search Button -->
+                        <a class="clickable" data-toggle="modal" data-target="#TravelModal" title="Search Layer Attributes"><i class="fas fa-bus-alt"></i></a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -614,7 +616,54 @@
             </div>
         </div>
     </div>
+    <!-- Travel -->
+    <!-- Travel -->
+    <!-- Travel -->
+    <div class="modal left fade" id="TravelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
 
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fas fa-bus-alt"></i>&nbsp;Travel Tools</h4>
+                </div>
+
+                <div class="modal-body ">
+                    <!-- lng/lat on map click -->
+                    <p style="font-size:12px"><i class="fas fa-mouse-pointer"></i> Click on map to find lng/lat:
+                    </p>
+                    <pre id='latlngonclickd'><i class="fa fa-fw fa-globe"></i> lng/lat</pre>
+
+
+                    <br />
+                    <hr>
+                    <br />
+                    <!-- enter lng/lat -->
+                    <div style="vertical-align:top;">
+                        <p style="font-size: 12px"><i class="fas fa-map-marked-alt"></i> Enter Coordinates A </p>
+                        <input type="number" id='lngInputs0' style="font-size:11px; padding:2px; margin:2px" placeholder="longitude" /><br>
+                        <input type="number" id='latInputs0' style="font-size:11px; padding:2px; margin:2px" placeholder="latitude" /><br>
+                        <br />
+                        <hr>
+                        <br />
+                        <p style="font-size: 12px"><i class="fas fa-map-marked-alt"></i> Enter Coordinates B</p>
+                        <input type="number" id='lngInputs1' style="font-size:11px; padding:2px; margin:2px" placeholder="longitude" /><br>
+                        <input type="number" id='latInputs1' style="font-size:11px; padding:2px; margin:2px" placeholder="latitude" /><br>
+                        <div style="padding-top:10px">
+                            <input type="button" value="find" id="findTravel" style="font-size:10px;" />
+                            <input type="button" value="clear" id="clearTravel" style="font-size:10px;" />
+                        </div>
+                    </div>
+
+                    <br />
+                    <hr>
+                    <br />
+
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

@@ -213,10 +213,11 @@ $('#findNearest').click(function() {
 // function to add polygon to nearest points
 function addPolygon(feature) {
     // creates a bbox for the given geojson
+    var hull = turf.concave(feature);
     var bbox = turf.bbox(feature);
     //creates a polygon with the bouning box
     var poly = turf.bboxPolygon(bbox);
-    return poly;
+    return hull;
 }
 // adds a layer for a polygon
 function addpolygonlayer(json) {
@@ -702,9 +703,56 @@ function createpastedLayerPoints(json) {
 
 
 }
+/* travel mapjs */
+$("#findTravel").click(function(e) {
+    e.preventDefault();
+    var lng = $("#lngInputs0").val();
+    var lat = $("#latInputs0").val();
+    var lng1 = $("#lngInputs1").val();
+    var lat1 = $("#latInputs1").val();
+    var result = lng + "," + lat + "," + lng1 + "," + lat1;
+    if (lng == null || lng == " " || lat == null || lat == " " || lng1 == null || lng1 == " " || lat1 == null || lat1 == " ") {
+        alert("Please enter a lnglat Field");
+    } else {
+        $.get("http://localhost:8080/Travel/?lnglat=" + result)
+            .done(function(data) {
+
+                AddTravelLayer(data);
 
 
+            });
+    }
+    return false;
+});
 
+function AddTravelLayer(data) {;
+    paint = getRandomColor();
+    var random = 'Travel'
+        /* generate a unique layer id */
+    var generate = makeid(6, random);
+
+    deleteLayer.push(generate);
+    map.addSource(generate, {
+        'type': 'geojson',
+        'data': data
+
+    });
+
+    map.addLayer({
+        'id': generate,
+        'type': 'line',
+        'source': generate,
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': paint,
+            'line-width': 4
+        }
+    });
+
+}
 
 //clear textbox for pasted geojson
 $("#clearpasted").click(function(event) {
@@ -841,7 +889,10 @@ function removelayers(layer) {
                 const index = deleteLayer.indexOf(afterdellete[i]);
                 deleteLayer.splice(index, 1)
             }
+
+
         }
+
     }
 
 }
@@ -948,7 +999,8 @@ map.on(touchEvent, function(e) {
         JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
     document.getElementById('latlngonclick').innerHTML =
         JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
-
+    document.getElementById('latlngonclickd').innerHTML =
+        JSON.stringify(e.lngLat, function(key, val) { return val.toFixed ? Number(val.toFixed(4)) : val; }).replace('{"lng":', '').replace('"lat":', ' ').replace('}', '')
 
 });
 
